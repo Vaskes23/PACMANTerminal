@@ -9,7 +9,7 @@
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
-#define CHERRY '@'
+#define CHERRY '%'
 #define POINT '.'
 #define TELEPORT 'X'
 

@@ -11,7 +11,7 @@
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
-#define CHERRY '@'
+#define CHERRY '%'
 #define POINT '.'
 #define TELEPORT 'X'
 
@@ -56,13 +56,13 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
         //count game objects
         for (int i = 0; i < row.size(); ++i) {
             char ch = row[i];
-            if (ch == 'C') {
+            if (ch == '<') {
                 pacmannumber++;
-            } else if (ch == 'A') {
+            } else if (ch == 'G') {
                 ghostnumber++;
             } else if (ch == '.') {
                 points++;
-            } else if (ch == '@') {
+            } else if (ch == '%') {
                 cherrys++;
             } else if (ch == TELEPORT) {
                 teleport[teleport_count] = make_pair(game_map.size() - 1, i);
@@ -74,10 +74,10 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
         }
     }
     if (pacmannumber != 1) {
-        throw runtime_error("The map must have exactly one Pacman ('C')");
+        throw runtime_error("The map must have exactly one Pacman ('<')");
     }
     if (ghostnumber < 1 || ghostnumber > 4) {
-        throw runtime_error("The map must have between 1 and 4 ghosts ('A')");
+        throw runtime_error("The map must have between 1 and 4 ghosts ('G')");
     }
     if (teleport_count == 2) {
         teleport_exists = true;
@@ -93,7 +93,7 @@ pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gam
     int x = -1, y = -1;
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
-            if (gameMap[i][j] == 'C') {
+            if (gameMap[i][j] == '<') {
                 y = i;
                 x = j;
                 break;
@@ -405,7 +405,6 @@ string CMove::getScoreBoard(const string &filename) {
     for (int i = 0; i < scores.size(); i++) {
         ss << i + 1 << ". " << scores[i].game_tag << ": " << scores[i].score << "\n";
     }
-
     return ss.str();
 }
 
