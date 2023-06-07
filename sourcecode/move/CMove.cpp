@@ -397,3 +397,16 @@ void CMove::writeHighScores(const string &filename, const vector<CMove::ScoreEnt
     }
 }
 
+string CMove::getScoreBoard(const string &filename) {
+    vector<ScoreEntry> scores = readHighScores(filename);
+
+    stringstream ss;
+    ss << "SCORE BOARD\n";
+    for (int i = 0; i < scores.size(); i++) {
+        ss << i + 1 << ". " << scores[i].game_tag << ": " << scores[i].score << "\n";
+    }
+
+    return ss.str();
+}
+
+

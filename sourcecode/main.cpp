@@ -16,7 +16,7 @@
 using namespace std;
 
 CPrint cPrintInstanceMain;
-CMove cMoveInstance;
+CMove cMoveInstanceMain;
 
 
 
@@ -29,7 +29,7 @@ int main() {
     string name = cPrintInstanceMain.mainMenu();
 
     int height, width, starty = 0, startx = 0;
-    cMoveInstance.initializeWindowAndCurses(height, width, starty, startx);
+    cMoveInstanceMain.initializeWindowAndCurses(height, width, starty, startx);
 
     // Pac-Man-like characters
     vector<char> pacman_chars_up;
@@ -66,11 +66,11 @@ int main() {
     int x, y, charIndex;
     char pacmanChar;
 
-    cMoveInstance.initializePacman(gameMap, displayedMap, x, y, currentDirection, charIndex,
+    cMoveInstanceMain.initializePacman(gameMap, displayedMap, x, y, currentDirection, charIndex,
                      pacman_chars_up, pacman_chars_down, pacman_chars_right,
                      pacman_chars_left, pacmanChar);
 
-    cMoveInstance.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
+    cMoveInstanceMain.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
               pacman_chars_right, pacman_chars_left, pacmanChar, name);
 
     endwin();

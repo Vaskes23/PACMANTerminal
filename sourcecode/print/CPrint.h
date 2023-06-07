@@ -16,6 +16,7 @@
 #include <ncurses.h>
 
 #include "../CPacManGame.h"
+#include "../move/CMove.h"
 
 using namespace std;
 
@@ -75,6 +76,14 @@ public:
     * \brief This function is used to destroy a window.
     */
     void destroy_win(WINDOW *local_win);
+
+
+    /**
+     * \brief This function is used to display the scoreboard.
+     * \param win[in] - The window in which the scoreboard will be displayed
+     * \param scoreboard[in] - The scoreboard that will be displayed
+     */
+    void displayScoreBoard(WINDOW *win, const string &scoreboard);
 
 
 private:

@@ -178,7 +178,14 @@ public:
         void writeHighScores(const string &filename, const vector<ScoreEntry> &scores);
 
 
-        private:
+        /**
+        * @brief This function displays the high scores.
+         * @param filename[in] - The name of the high scores file
+        */
+        string getScoreBoard(const string &filename);
+
+
+private:
         int totalCherries = 0;
         int totalPoints = 0;
     };

@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+CMove cMoveInstance;
+
 WINDOW *CPrint::create_newwin(int height, int width, int starty, int startx) {
     WINDOW *local_win = newwin(height, width, starty, startx);
     return local_win;
@@ -72,8 +74,9 @@ string CPrint::askGameTag(string &game_tag) {
     echo();
     char str[11];
     mvprintw(LINES - 3, 0, "Please enter your game tag (max 10 characters): ");
-    getstr(str);
-    game_tag[10] = '\0'; // ensure null-terminated
+    wgetnstr(stdscr, str, 10);  // Only allow 10 characters input
+
+    str[10] = '\0'; // ensure null-terminated
     noecho();
     refresh();
 
@@ -87,6 +90,8 @@ string CPrint::askGameTag(string &game_tag) {
     refresh();
     return game_tag;
 }
+
+
 
 string CPrint::mainMenu() {
     WINDOW *menu_win;
@@ -117,23 +122,37 @@ string CPrint::mainMenu() {
                     --highlight;
                 break;
             case KEY_DOWN:
-                if (highlight == 3){
+                if (highlight == 3) {
                     highlight = 0;
-                }
-                else
+                } else
                     ++highlight;
                 break;
-            case 10: // ASCII for Enter key
+            case 10:
                 choice = highlight;
                 break;
         }
         displayMenu(menu_win, highlight);
-        if (choice == 0) { // handle PLAY input
-            name = askGameTag(game_tag);
+        if (choice == 0) {
+                name = askGameTag(game_tag);
+        }
+        else if (choice == 1) {
+            string scoreboard = cMoveInstance.getScoreBoard("../configurationFiles/highScore.txt");
+            displayScoreBoard(menu_win, scoreboard);
+            getch();
+            wclear(menu_win);
+            choice = -1;  // Reset choice here so it doesn't default to starting the game
         } else if (choice == 3) {
             endwin();
             exit(0);
         }
     }
+
     return name;
+}
+
+void CPrint::displayScoreBoard(WINDOW *win, const string &scoreboard) {
+    wclear(win);
+    box(win, 0, 0);
+    mvwprintw(win, 1, 1, "%s", scoreboard.c_str());
+    wrefresh(win);
 }
