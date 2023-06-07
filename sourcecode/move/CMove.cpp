@@ -17,7 +17,7 @@
 
 CPrint cPrintInstance;
 
-int cherrysEaten = 0, pointsEaten = 0; //counter for the number of objects eaten
+int cherrysEaten, pointsEaten; //counter for the number of objects eaten
 
 pair<int, int> teleport[2]; // Store the coordinates of the teleportation points
 bool teleport_exists = false; // To check if teleportation point exists in map
@@ -84,6 +84,8 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
     } else if (teleport_count > 0) {
         throw runtime_error("The map must have exactly two teleportation points ('X')");
     }
+    totalPoints = points;
+    totalCherries = cherrys;
     return game_map;
 }
 
@@ -170,7 +172,29 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
     }
 }
 
-void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight) {
+void CMove::saveCurrentScore(const string &filename, const string &game_tag, int score) {
+    vector<CMove::ScoreEntry> scores = readHighScores(filename);
+
+    // If there are less than 10 scores already saved, or if the new score is higher than the lowest score
+    if (scores.size() < 10 || scores.back().score < score) {
+        scores.push_back({game_tag, score});
+
+        sort(scores.begin(), scores.end(),
+             [](const CMove::ScoreEntry &a, const CMove::ScoreEntry &b) {
+                 return a.score > b.score;
+             });
+
+        // If there are now more than 10 scores, remove the lowest one (which is now at the end of the vector)
+        if (scores.size() > 10) {
+            scores.pop_back();
+        }
+
+        writeHighScores(filename, scores);
+    }
+}
+
+void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
+                        int &score) {
     ch = getch();
     if (ch != ERR) {
         if (!paused) {
@@ -214,6 +238,8 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                             wrefresh(pause_win);
                         }
                     } else if (highlight == 1) {
+                        score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+                        saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
                         endwin();
                         exit(0);
                     }
@@ -301,11 +327,12 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     bool paused = false;
     int highlight = 0;
     bool gameEnd = false; // flag to determine when the game ends
+    int score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
 
     while (!gameEnd) {
         int new_x = x, new_y = y;
 
-        handleInput(ch, last_ch, paused, pause_win, highlight);
+        handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
         if (paused) {
             continue; // Don't update the game state if it's paused
@@ -327,11 +354,17 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         if (cherrysEaten + pointsEaten == totalCherries + totalPoints) {
             gameEnd = true;
         }
+
+        // After the game ends, update the high scores
+        if (gameEnd) {
+            score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+            saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
+        }
     }
 
     // After the game ends, update the high scores
-    int score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
-    updateHighScores("../configurationFiles/highScore.txt", gameTag, score);
+    score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+    saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
 }
 
 //--------------------------------------------------------------
@@ -359,32 +392,8 @@ vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
 void CMove::writeHighScores(const string &filename, const vector<CMove::ScoreEntry> &scores) {
     ofstream file(filename);
 
-    for (const auto &entry : scores) {
+    for (const auto &entry: scores) {
         file << entry.game_tag << " " << entry.score << endl;
     }
 }
 
-// Function to update high scores if current score is in the top 10
-void CMove::updateHighScores(const string &filename, const string &game_tag, int score) {
-    vector<CMove::ScoreEntry> scores = readHighScores(filename);
-
-    // Check if the current score is high enough to be in the top 10
-    if (scores.size() < 10 || score > scores.back().score) {
-        // If the list of scores is already 10, remove the last one
-        if (scores.size() == 10) {
-            scores.pop_back();
-        }
-
-        // Add the new high score
-        scores.push_back({game_tag, score});
-
-        // Sort the scores in decreasing order
-        sort(scores.begin(), scores.end(),
-             [](const CMove::ScoreEntry &a, const CMove::ScoreEntry &b) {
-                 return a.score > b.score;
-             });
-
-        // Write the updated scores back into the file
-        writeHighScores(filename, scores);
-    }
-}
