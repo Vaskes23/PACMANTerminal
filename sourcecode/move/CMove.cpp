@@ -290,15 +290,16 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
                                      vector<vector<char> > &displayed_map, int &char_index,
                                      vector<char> *&current_direction,
                                      char &pacman_char) {
-    // Check if the new position is a cherry
+// Check if the new position is a cherry
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++; // increment the counter for the number of cherries eaten
     }
 
-    // Check if the new position is a point
+// Check if the new position is a point
     if (game_map[new_y][new_x] == POINT) {
         pointsEaten++; // increment the counter for the number of points eaten
     }
+
 
     // Clear current character
     displayed_map[y][x] = EMPTY_SPACE;
@@ -324,7 +325,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     int ch = 0, last_ch = KEY_RIGHT;
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
 
-    bool paused = false;
+    bool paused = false, isWinner = false;
     int highlight = 0;
     bool gameEnd = false; // flag to determine when the game ends
     int score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
@@ -351,24 +352,20 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten);
         usleep(100000);  // Control the speed of the game
 
-        if (cherrysEaten + pointsEaten == totalCherries + totalPoints) {
+        if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
+            isWinner = true; // set the player as the winner
             gameEnd = true;
         }
+
 
         // After the game ends, update the high scores
         if (gameEnd) {
             score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
             saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
+            displayEndGameMessage(isWinner); // display the appropriate end game message
         }
     }
-
-    // After the game ends, update the high scores
-    score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
-    saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
 }
-
-//--------------------------------------------------------------
-
 
 // Function to read high scores from the file
 vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
@@ -408,4 +405,12 @@ string CMove::getScoreBoard(const string &filename) {
     return ss.str();
 }
 
-
+void CMove::displayEndGameMessage(bool isWinner) {
+    if (isWinner) {
+        mvprintw(LINES / 2, (COLS - 11) / 2, "You Win!");
+    } else {
+        mvprintw(LINES / 2, (COLS - 9) / 2, "Wasted!");
+    }
+    refresh(); // update the screen immediately
+    sleep(2); // wait a few seconds for the player to see the message
+}

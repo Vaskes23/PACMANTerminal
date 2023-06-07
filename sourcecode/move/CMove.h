@@ -184,6 +184,12 @@ public:
         */
         string getScoreBoard(const string &filename);
 
+        /**
+        * @brief This function displays the end game message.
+         * @param isWinner[in] - The boolean which tells if the player won the game
+        */
+        void displayEndGameMessage(bool isWinner);
+
 
 private:
         int totalCherries = 0;
