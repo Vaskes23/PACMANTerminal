@@ -15,6 +15,7 @@ WINDOW *CPrint::create_newwin(int height, int width, int starty, int startx) {
     return local_win;
 }
 
+
 // Function to destroy the game window
 void CPrint::destroy_win(WINDOW *local_win) {
     wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
