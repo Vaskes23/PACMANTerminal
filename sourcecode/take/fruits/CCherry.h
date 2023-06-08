@@ -41,7 +41,7 @@ public:
     void fruitAppearance() override;
 
     /**
-     * \brief This function sets the skill definition for the ability that the cherry will give to the player.
+     * \brief This function sets the ghost definition for the ability that the cherry will give to the player.
      * In this case, the player will be able to eat ghosts.
      */
     void skillDefinition() override;

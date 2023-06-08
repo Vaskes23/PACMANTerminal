@@ -19,80 +19,77 @@
 
 CPrint cPrintInstance;
 
-int cherrysEaten, pointsEaten; //counter for the number of objects eaten
+int cherrysEaten, pointsEaten;
 
-pair<int, int> teleport[2]; // Store the coordinates of the teleportation points
-bool teleport_exists = false; // To check if teleportation point exists in map
+pair<int, int> teleport[2];
+bool teleport_exists = false;
 
 using namespace std;
 
 
-class Ghost {
-public:
-    Ghost(int startX, int startY) : x(startX), y(startY), lastDirection(KEY_UP) {}
-
-    void moveGhost(vector<vector<char>>& game_map) {
-        int new_x = x, new_y = y;
-
-        // Randomly select a new direction for the ghost to move
-        vector<int> directions = { KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
-        shuffle(directions.begin(), directions.end(), default_random_engine(random_device{}()));
-
-        for (int direction : directions) {
-            switch (direction) {
-                case KEY_UP:
-                    if (y > 0 && game_map[y - 1][x] != WALL && lastDirection != KEY_DOWN) {
-                        new_y--;
-                    }
-                    break;
-                case KEY_DOWN:
-                    if (y < game_map.size() - 1 && game_map[y + 1][x] != WALL && lastDirection != KEY_UP) {
-                        new_y++;
-                    }
-                    break;
-                case KEY_LEFT:
-                    if (x > 0 && game_map[y][x - 1] != WALL && lastDirection != KEY_RIGHT) {
-                        new_x--;
-                    }
-                    break;
-                case KEY_RIGHT:
-                    if (x < game_map[0].size() - 1 && game_map[y][x + 1] != WALL && lastDirection != KEY_LEFT) {
-                        new_x++;
-                    }
-                    break;
-            }
-
-            // If the ghost can move in the selected direction, break the loop
-            if (new_x != x || new_y != y) {
-                lastDirection = direction;
-                break;
-            }
-        }
-
-        game_map[y][x] = EMPTY_SPACE;
-        x = new_x;
-        y = new_y;
-        game_map[y][x] = 'G';
-    }
-
-    int x;
-    int y;
-private:
-    int lastDirection;
-};
+//class Ghost {
+//public:
+//    Ghost(int startX, int startY) : x(startX), y(startY), lastDirection(KEY_UP) {}
+//
+//    void moveGhost(vector<vector<char>>& game_map) {
+//        int new_x = x, new_y = y;
+//
+//        vector<int> directions = { KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
+//        shuffle(directions.begin(), directions.end(), default_random_engine(random_device{}()));
+//
+//        for (int direction : directions) {
+//            switch (direction) {
+//                case KEY_UP:
+//                    if (y > 0 && game_map[y - 1][x] != WALL && lastDirection != KEY_DOWN) {
+//                        new_y--;
+//                    }
+//                    break;
+//                case KEY_DOWN:
+//                    if (y < game_map.size() - 1 && game_map[y + 1][x] != WALL && lastDirection != KEY_UP) {
+//                        new_y++;
+//                    }
+//                    break;
+//                case KEY_LEFT:
+//                    if (x > 0 && game_map[y][x - 1] != WALL && lastDirection != KEY_RIGHT) {
+//                        new_x--;
+//                    }
+//                    break;
+//                case KEY_RIGHT:
+//                    if (x < game_map[0].size() - 1 && game_map[y][x + 1] != WALL && lastDirection != KEY_LEFT) {
+//                        new_x++;
+//                    }
+//                    break;
+//            }
+//
+//            if (new_x != x || new_y != y) {
+//                lastDirection = direction;
+//                break;
+//            }
+//        }
+//
+//        game_map[y][x] = EMPTY_SPACE;
+//        x = new_x;
+//        y = new_y;
+//        game_map[y][x] = 'G';
+//    }
+//
+//    int x;
+//    int y;
+//private:
+//    int lastDirection;
+//};
 
 void CMove::initializeWindowAndCurses(int &height, int &width, int &starty, int &startx) {
-    // Initialize the window parameters
     height = 1500;
     width = 1500;
     starty = 0;
     startx = 0;
 
-    initscr();              // Start curses mode
-    cbreak();               // Line buffering disabled, Pass everything to me
-    keypad(stdscr, TRUE);   // Enable function keys
-    curs_set(0);            // Hide the cursor
-    srand(time(NULL));      // Random seed
+    initscr();
+    cbreak();
+    keypad(stdscr, TRUE);
+    curs_set(0);
+    srand(time(NULL));
 }
 
 vector<vector<char> > CMove::readMapFromFile(const string &filename) {
@@ -110,7 +107,6 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
         vector<char> row(line.begin(), line.end());
         game_map.push_back(row);
 
-        //count game objects
         for (int i = 0; i < row.size(); ++i) {
             char ch = row[i];
             if (ch == '<') {
@@ -169,13 +165,10 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
                              vector<char> &pacman_chars_right,
                              vector<char> &pacman_chars_left, char &pacmanChar) {
 
-    // Check if the terminal window is big enough for the map
     int max_height, max_width;
 
-    // Load the map from file
     gameMap = readMapFromFile("../configurationFiles/map1.txt");
 
-    // Check if the walls are complete
     for (int i = 0; i < gameMap.size(); ++i) {
         if (gameMap[i].front() != WALL || gameMap[i].back() != WALL) {
             throw runtime_error("The walls are not complete in the map");
@@ -188,15 +181,12 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
     }
     displayedMap = gameMap;
 
-    // Initialize the position of Pacman
     x = findPacmanInitialPosition(gameMap).first;
     y = findPacmanInitialPosition(gameMap).second;
 
-    // Initialize the direction of Pacman
     currentDirection = &pacman_chars_right;
     charIndex = 0;
 
-    // Initialize the Pacman character
     pacmanChar = pacman_chars_left[charIndex];
 }
 
@@ -232,7 +222,6 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
 void CMove::saveCurrentScore(const string &filename, const string &game_tag, int score) {
     vector<CMove::ScoreEntry> scores = readHighScores(filename);
 
-    // If there are less than 10 scores already saved, or if the new score is higher than the lowest score
     if (scores.size() < 10 || scores.back().score < score) {
         scores.push_back({game_tag, score});
 
@@ -241,7 +230,6 @@ void CMove::saveCurrentScore(const string &filename, const string &game_tag, int
                  return a.score > b.score;
              });
 
-        // If there are now more than 10 scores, remove the lowest one (which is now at the end of the vector)
         if (scores.size() > 10) {
             scores.pop_back();
         }
@@ -264,7 +252,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                     break;
                 case 'P':
                 case 'p':
-                    paused = !paused; // switch the game state
+                    paused = !paused;
                     if (paused) {
                         cPrintInstance.displayPauseMenu(pause_win, highlight);
                     } else {
@@ -277,7 +265,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
             switch (ch) {
                 case 'P':
                 case 'p':
-                    paused = !paused; // switch the game state
+                    paused = !paused;
                     if (paused) {
                         cPrintInstance.displayPauseMenu(pause_win, highlight);
                     } else {
@@ -289,13 +277,13 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                 case 10:
                 case 13:
                     if (highlight == 0) {
-                        paused = !paused; // switch the game state
+                        paused = !paused;
                         if (!paused) {
                             wclear(pause_win);
                             wrefresh(pause_win);
                         }
                     } else if (highlight == 1) {
-                        score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+                        score = cherrysEaten + pointsEaten;
                         saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
                         endwin();
                         exit(0);
@@ -347,29 +335,23 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
                                      vector<vector<char> > &displayed_map, int &char_index,
                                      vector<char> *&current_direction,
                                      char &pacman_char) {
-// Check if the new position is a cherry
     if (game_map[new_y][new_x] == CHERRY) {
-        cherrysEaten++; // increment the counter for the number of cherries eaten
+        cherrysEaten++;
     }
 
-// Check if the new position is a point
     if (game_map[new_y][new_x] == POINT) {
-        pointsEaten++; // increment the counter for the number of points eaten
+        pointsEaten++;
     }
 
-    // Clear current character
     displayed_map[y][x] = EMPTY_SPACE;
-    game_map[y][x] = EMPTY_SPACE; // Clear the eaten point/cherry from the game map
+    game_map[y][x] = EMPTY_SPACE;
 
-    // Cycle the Pac-Man character
     char_index = (char_index + 1) % current_direction->size();
     pacman_char = (*current_direction)[char_index];
 
-    // Update x, y
     x = new_x;
     y = new_y;
 
-    // Update the displayed map with the new position of Pacman
     displayed_map[y][x] = pacman_char;
 }
 
@@ -392,7 +374,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         for (int j = 0; j < gameMap[i].size(); ++j) {
             if (gameMap[i][j] == 'G') {
                 ghosts.push_back(Ghost(j, i));
-                displayedMap[i][j] = EMPTY_SPACE; // Initially set the ghost's position in displayed map as EMPTY
+                displayedMap[i][j] = EMPTY_SPACE;
             }
         }
     }
@@ -403,7 +385,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
         if (paused) {
-            continue; // Do not perform any actions if the game is paused
+            continue;
         }
 
         handleLogic(new_x, new_y, last_ch, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
@@ -421,7 +403,6 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
             ghost.moveGhost(gameMap);
 
-            // Update the displayed map with the new position of the ghost
             displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
             displayedMap[ghost.y][ghost.x] = 'G';
         }
@@ -435,16 +416,14 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             gameEnd = true;
         }
 
-        // After the game ends, update the high scores
         if (gameEnd) {
-            score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+            score = cherrysEaten + pointsEaten;
             saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
-            displayEndGameMessage(isWinner); // display the appropriate end game message
+            displayEndGameMessage(isWinner);
         }
     }
 }
 
-// Function to read high scores from the file
 vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
     ifstream file(filename);
     vector<ScoreEntry> scores;
@@ -454,7 +433,7 @@ vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
         istringstream iss(line);
         ScoreEntry entry;
         if (!(iss >> entry.game_tag >> entry.score)) {
-            break;  // Error in parsing
+            break;
         }
         scores.push_back(entry);
     }
@@ -462,7 +441,6 @@ vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
     return scores;
 }
 
-// Function to write high scores to the file
 void CMove::writeHighScores(const string &filename, const vector<CMove::ScoreEntry> &scores) {
     ofstream file(filename);
 
@@ -488,6 +466,6 @@ void CMove::displayEndGameMessage(bool isWinner) {
     } else {
         mvprintw(LINES / 2, (COLS - 9) / 2, "Wasted!");
     }
-    refresh(); // update the screen immediately
-    sleep(2); // wait a few seconds for the player to see the message
+    refresh();
+    sleep(2);
 }

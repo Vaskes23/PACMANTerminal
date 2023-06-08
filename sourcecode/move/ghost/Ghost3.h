@@ -12,15 +12,15 @@
 
 #include <ncurses.h>
 
-#include "./CSkill.h"
+#include "./CGhost.h"
 
 using namespace std;
 
 /**
  * \class Ghost3
- * \brief This class overrides the virtual function from the CSkill class and by that defines how the ghost should behave
+ * \brief This class overrides the virtual function from the CGhost class and by that defines how the ghost should behave
  */
-class Ghost3 : public CSkill {
+class Ghost3 : public CGhost {
 public:
     /**
      * \brief Constructor for Ghost3

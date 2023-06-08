@@ -42,7 +42,7 @@ public:
     void fruitAppearance() override;
 
     /**
-    * \brief This function sets the skill definition for the ability that the banana will give to the player.
+    * \brief This function sets the ghost definition for the ability that the banana will give to the player.
     * In this case, the player will gain another extra life.
     */
     void skillDefinition() override;

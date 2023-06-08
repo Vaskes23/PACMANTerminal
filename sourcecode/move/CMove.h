@@ -9,11 +9,14 @@
 #include <cstdio>
 #include <string.h>
 #include <iostream>
+#include <algorithm>
+#include <random>
 
 #include <ncurses.h>
 
 #include "../CPacManGame.h"
 #include "../print/CPrint.h"
+#include "ghost/CGhost.h"
 
 /**
  * \class CMove
