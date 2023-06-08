@@ -8,6 +8,8 @@
 #include <vector>
 #include <fstream>
 #include <unistd.h>
+#include <random>
+
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
@@ -23,6 +25,61 @@ pair<int, int> teleport[2]; // Store the coordinates of the teleportation points
 bool teleport_exists = false; // To check if teleportation point exists in map
 
 using namespace std;
+
+
+class Ghost {
+public:
+    Ghost(int startX, int startY) : x(startX), y(startY), lastDirection(KEY_UP) {}
+
+    void moveGhost(vector<vector<char>>& game_map) {
+        int new_x = x, new_y = y;
+
+        // Randomly select a new direction for the ghost to move
+        vector<int> directions = { KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
+        shuffle(directions.begin(), directions.end(), default_random_engine(random_device{}()));
+
+        for (int direction : directions) {
+            switch (direction) {
+                case KEY_UP:
+                    if (y > 0 && game_map[y - 1][x] != WALL && lastDirection != KEY_DOWN) {
+                        new_y--;
+                    }
+                    break;
+                case KEY_DOWN:
+                    if (y < game_map.size() - 1 && game_map[y + 1][x] != WALL && lastDirection != KEY_UP) {
+                        new_y++;
+                    }
+                    break;
+                case KEY_LEFT:
+                    if (x > 0 && game_map[y][x - 1] != WALL && lastDirection != KEY_RIGHT) {
+                        new_x--;
+                    }
+                    break;
+                case KEY_RIGHT:
+                    if (x < game_map[0].size() - 1 && game_map[y][x + 1] != WALL && lastDirection != KEY_LEFT) {
+                        new_x++;
+                    }
+                    break;
+            }
+
+            // If the ghost can move in the selected direction, break the loop
+            if (new_x != x || new_y != y) {
+                lastDirection = direction;
+                break;
+            }
+        }
+
+        game_map[y][x] = EMPTY_SPACE;
+        x = new_x;
+        y = new_y;
+        game_map[y][x] = 'G';
+    }
+
+    int x;
+    int y;
+private:
+    int lastDirection;
+};
 
 void CMove::initializeWindowAndCurses(int &height, int &width, int &starty, int &startx) {
     // Initialize the window parameters
@@ -300,7 +357,6 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
         pointsEaten++; // increment the counter for the number of points eaten
     }
 
-
     // Clear current character
     displayed_map[y][x] = EMPTY_SPACE;
     game_map[y][x] = EMPTY_SPACE; // Clear the eaten point/cherry from the game map
@@ -327,8 +383,19 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
     bool paused = false, isWinner = false;
     int highlight = 0;
-    bool gameEnd = false; // flag to determine when the game ends
-    int score = cherrysEaten + pointsEaten;  // calculate the score based on your scoring system
+    bool gameEnd = false;
+    int score = cherrysEaten + pointsEaten;
+
+    vector<Ghost> ghosts;
+
+    for (int i = 0; i < gameMap.size(); ++i) {
+        for (int j = 0; j < gameMap[i].size(); ++j) {
+            if (gameMap[i][j] == 'G') {
+                ghosts.push_back(Ghost(j, i));
+                displayedMap[i][j] = EMPTY_SPACE; // Initially set the ghost's position in displayed map as EMPTY
+            }
+        }
+    }
 
     while (!gameEnd) {
         int new_x = x, new_y = y;
@@ -336,7 +403,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
         if (paused) {
-            continue; // Don't update the game state if it's paused
+            continue; // Do not perform any actions if the game is paused
         }
 
         handleLogic(new_x, new_y, last_ch, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
@@ -348,15 +415,25 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             continue;
         }
 
-        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar);
-        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten);
-        usleep(100000);  // Control the speed of the game
+        for (Ghost &ghost : ghosts) {
+            int old_ghost_x = ghost.x;
+            int old_ghost_y = ghost.y;
 
-        if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
-            isWinner = true; // set the player as the winner
-            gameEnd = true;
+            ghost.moveGhost(gameMap);
+
+            // Update the displayed map with the new position of the ghost
+            displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
+            displayedMap[ghost.y][ghost.x] = 'G';
         }
 
+        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar);
+        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten);
+        usleep(100000);
+
+        if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
+            isWinner = true;
+            gameEnd = true;
+        }
 
         // After the game ends, update the high scores
         if (gameEnd) {
