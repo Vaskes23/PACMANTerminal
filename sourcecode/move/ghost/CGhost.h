@@ -40,7 +40,11 @@ public:
 
     int x;
     int y;
-private:
+protected:
+
+    int getNewDirection(vector<vector<char>>& game_map, int& new_x, int& new_y, char& newChar);
+    void getStuck(int& new_x, int& new_y, char& newChar, vector<vector<char>>& game_map);
+
     int lastDirection;
     char previousChar;
     int initialX;
