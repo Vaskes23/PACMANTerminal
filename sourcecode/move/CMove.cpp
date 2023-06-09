@@ -295,10 +295,6 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
         cherryEatenTimestamp = time(NULL);
     }
 
-    if (game_map[new_y][new_x] == CHERRY) {
-        cherrysEaten++;
-    }
-
     if (game_map[new_y][new_x] == POINT) {
         pointsEaten++;
     }
@@ -311,6 +307,13 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
 
     x = new_x;
     y = new_y;
+
+    for (Ghost &ghost: ghosts) {
+        if (x == ghost.x && y == ghost.y && cherryEaten) {
+            ghost.resetPosition(); // Method to reset the position of the ghost
+            pointsEaten += 10; // Pacman gains 10 points
+        }
+    }
 
     displayed_map[y][x] = pacman_char;
 }
