@@ -24,7 +24,7 @@ using namespace std;
  */
 class Ghost {
 public:
-    Ghost(int startX, int startY);
+    Ghost(int startX, int startY, char startChar);
 
     void moveGhost(std::vector<std::vector<char>>& game_map);
 
@@ -32,6 +32,7 @@ public:
     int y;
 private:
     int lastDirection;
+    char previousChar;
 };
 
 #endif //PA2_PACMAN_CGHOST_H
