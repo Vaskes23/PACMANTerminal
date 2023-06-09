@@ -8,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <unistd.h>
+#include <ctime>
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
@@ -18,6 +19,9 @@
 CPrint cPrintInstance;
 
 int cherrysEaten, pointsEaten, pacmanLives = 3;
+
+long cherryEatenTimestamp;
+bool cherryEaten = false;
 
 pair<int, int> teleport[2];
 pair<int, int> pacmanInitPos;
@@ -284,6 +288,13 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
                                      vector<vector<char> > &displayed_map, int &char_index,
                                      vector<char> *&current_direction,
                                      char &pacman_char, vector<Ghost> &ghosts) {
+
+    if (game_map[new_y][new_x] == CHERRY) {
+        cherrysEaten++;
+        cherryEaten = true;
+        cherryEatenTimestamp = time(NULL);
+    }
+
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
     }
@@ -309,6 +320,11 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
     clear();
+
+    if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
+        cherryEaten = false;
+    }
+
     int ch = 0, last_ch = KEY_RIGHT;
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
 
@@ -340,18 +356,28 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (gameMap[new_y][new_x] == WALL) { continue; }
 
+        if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
+            cherryEaten = false;
+            for (Ghost &ghost: ghosts) {
+                displayedMap[ghost.y][ghost.x] = 'G';
+            }
+        }
+
         for (Ghost &ghost: ghosts) {
             int old_ghost_x = ghost.x;
             int old_ghost_y = ghost.y;
-            ghost.moveGhost(gameMap);
+            ghost.moveGhost(gameMap, cherryEaten);
             displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
-            displayedMap[ghost.y][ghost.x] = 'G';
+            if (cherryEaten) {
+                displayedMap[ghost.y][ghost.x] = 'R';
+            } else {
+                displayedMap[ghost.y][ghost.x] = 'G';
+            }
         }
 
         handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);
 
-        // check for collision with ghosts
         for (Ghost &ghost: ghosts) {
             if (x == ghost.x && y == ghost.y) {
                 pacmanLives--;

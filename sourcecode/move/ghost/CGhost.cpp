@@ -11,7 +11,7 @@ using namespace std;
 Ghost::Ghost(int startX, int startY, char startChar) : x(startX), y(startY), lastDirection(KEY_UP),
                                                        previousChar(startChar) {}
 
-void Ghost::moveGhost(vector<vector<char>>& game_map) {
+void Ghost::moveGhost(vector<vector<char>>& game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
@@ -58,7 +58,6 @@ void Ghost::moveGhost(vector<vector<char>>& game_map) {
         }
     }
 
-    // If the ghost is stuck (i.e., there are no valid directions), let it turn around
     if (isStuck) {
         switch (lastDirection) {
             case KEY_UP:
@@ -87,6 +86,5 @@ void Ghost::moveGhost(vector<vector<char>>& game_map) {
     game_map[y][x] = previousChar;
     x = new_x;
     y = new_y;
-    previousChar = newChar;
-    game_map[y][x] = 'G';
+
 }

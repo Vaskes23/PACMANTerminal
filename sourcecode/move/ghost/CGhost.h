@@ -26,7 +26,7 @@ class Ghost {
 public:
     Ghost(int startX, int startY, char startChar);
 
-    void moveGhost(std::vector<std::vector<char>>& game_map);
+    void moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEaten);
 
     int x;
     int y;
