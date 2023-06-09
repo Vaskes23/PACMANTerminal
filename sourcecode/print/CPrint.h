@@ -35,8 +35,8 @@ public:
      * \param cherrysEaten[in] - The number of cherrys eaten by the player
  */
     void displayMap(WINDOW *win, const std::vector<std::vector<char> > &game_map,
-                    const std::vector<std::vector<char> > &displayed_map, std::string game_tag, int cherrysEaten,
-                    int pointsEaten);
+                    const std::vector<std::vector<char> > &displayed_map,
+                    std::string game_tag, int cherrysEaten, int pointsEaten, int pacmanLives);
 
     /**
     * \brief This function is used to print the pause menu.

@@ -18,6 +18,8 @@
 #include "../print/CPrint.h"
 #include "ghost/CGhost.h"
 
+class Ghost; // Forward declaration of Ghost
+
 /**
  * \class CMove
  * \brief This class controls how the entities in the game move.
@@ -147,9 +149,9 @@ public:
          * @param char_index[in] - The index of the current direction of the pacman
          */
         void handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                      vector<vector<char> > &displayed_map, int &char_index,
-                                      vector<char> *&current_direction,
-                                      char &pacman_char);
+                                             vector<vector<char> > &displayed_map, int &char_index,
+                                             vector<char> *&current_direction,
+                                             char &pacman_char, vector<Ghost>& ghosts);
 
         /**
          * @brief This struct represents an entry in the high scores file.

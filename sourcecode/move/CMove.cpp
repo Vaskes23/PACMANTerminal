@@ -20,7 +20,7 @@
 
 CPrint cPrintInstance;
 
-int cherrysEaten, pointsEaten;
+int cherrysEaten, pointsEaten, pacmanLives = 3;
 
 pair<int, int> teleport[2];
 bool teleport_exists = false;
@@ -279,10 +279,11 @@ void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vecto
     }
 }
 
-void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                     vector<vector<char> > &displayed_map, int &char_index,
-                                     vector<char> *&current_direction,
-                                     char &pacman_char) {
+
+    void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
+                                         vector<vector<char> > &displayed_map, int &char_index,
+                                         vector<char> *&current_direction,
+                                         char &pacman_char, vector<Ghost>& ghosts){
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
     }
@@ -354,8 +355,8 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             displayedMap[ghost.y][ghost.x] = 'G';
         }
 
-        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar);
-        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten);
+        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar, ghosts);
+        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten,pacmanLives);
         usleep(100000);
 
         if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
