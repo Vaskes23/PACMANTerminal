@@ -8,9 +8,6 @@
 #include <vector>
 #include <fstream>
 #include <unistd.h>
-#include <random>
-#include <map>
-
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
@@ -23,6 +20,8 @@ CPrint cPrintInstance;
 int cherrysEaten, pointsEaten, pacmanLives = 3;
 
 pair<int, int> teleport[2];
+pair<int, int> pacmanInitPos;
+
 bool teleport_exists = false;
 
 using namespace std;
@@ -129,8 +128,9 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
     }
     displayedMap = gameMap;
 
-    x = findPacmanInitialPosition(gameMap).first;
-    y = findPacmanInitialPosition(gameMap).second;
+    pacmanInitPos = findPacmanInitialPosition(gameMap);
+    x = pacmanInitPos.first;
+    y = pacmanInitPos.second;
 
     currentDirection = &pacman_chars_right;
     charIndex = 0;
@@ -280,10 +280,10 @@ void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vecto
 }
 
 
-    void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                         vector<vector<char> > &displayed_map, int &char_index,
-                                         vector<char> *&current_direction,
-                                         char &pacman_char, vector<Ghost>& ghosts){
+void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
+                                     vector<vector<char> > &displayed_map, int &char_index,
+                                     vector<char> *&current_direction,
+                                     char &pacman_char, vector<Ghost> &ghosts) {
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
     }
@@ -313,9 +313,8 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
 
     bool paused = false, isWinner = false;
-    int highlight = 0;
     bool gameEnd = false;
-    int score = cherrysEaten + pointsEaten;
+    int score = cherrysEaten + pointsEaten, highlight = 0;
 
     vector<Ghost> ghosts;
 
@@ -328,35 +327,44 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     }
 
     while (!gameEnd) {
-        int new_x = x, new_y = y;
 
+        int new_x = x, new_y = y;
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
-        if (paused) {
-            continue;
-        }
+        if (paused) { continue; }
 
         handleLogic(new_x, new_y, last_ch, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
                     pacman_chars_right, pacman_chars_left);
         handleTeleportation(new_x, new_y, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
                             pacman_chars_right, pacman_chars_left);
 
-        if (gameMap[new_y][new_x] == WALL) {
-            continue;
-        }
+        if (gameMap[new_y][new_x] == WALL) { continue; }
 
-        for (Ghost &ghost : ghosts) {
+        for (Ghost &ghost: ghosts) {
             int old_ghost_x = ghost.x;
             int old_ghost_y = ghost.y;
-
             ghost.moveGhost(gameMap);
-
             displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
             displayedMap[ghost.y][ghost.x] = 'G';
         }
 
-        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar, ghosts);
-        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten,pacmanLives);
+        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
+                                 ghosts);
+
+        // check for collision with ghosts
+        for (Ghost &ghost: ghosts) {
+            if (x == ghost.x && y == ghost.y) {
+                pacmanLives--;
+                if (pacmanLives <= 0) {
+                    gameEnd = true;
+                } else {
+                    resetPacmanPosition(x, y, displayedMap, pacmanChar);
+                }
+                break;
+            }
+        }
+
+        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
         usleep(100000);
 
         if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
@@ -417,3 +425,11 @@ void CMove::displayEndGameMessage(bool isWinner) {
     refresh();
     sleep(2);
 }
+
+void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap,
+                                char &pacmanChar) {
+    x = pacmanInitPos.first;
+    y = pacmanInitPos.second;
+    displayedMap[y][x] = pacmanChar;
+}
+
