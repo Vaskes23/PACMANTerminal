@@ -1,7 +1,6 @@
 //
 // Created by Matyas Vascak on 11.05.2023.
 //
-
 #ifndef PA2_PACMAN_CGHOST_H
 #define PA2_PACMAN_CGHOST_H
 
@@ -10,7 +9,6 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
-
 
 #include <ncurses.h>
 
@@ -31,12 +29,17 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
     */
-    void moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEaten);
+    virtual void moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEaten);
 
     /**
     * @brief This function is used to reset the position of the ghost
     */
     void resetPosition();
+
+    /**
+     * @brief Destructor for Ghost
+     */
+    virtual ~Ghost() = default;
 
     int x;
     int y;
@@ -50,5 +53,27 @@ protected:
     int initialX;
     int initialY;
 };
+
+class GhostA : public Ghost {
+public:
+    GhostA(int startX, int startY, char startChar);
+
+    void moveGhost(vector<vector<char>>& game_map, bool cherryEaten) override;
+};
+
+class GhostB : public Ghost {
+public:
+    GhostB(int startX, int startY, char startChar);
+
+    void moveGhost(vector<vector<char>>& game_map, bool cherryEaten) override;
+};
+
+class GhostC : public Ghost {
+public:
+    GhostC(int startX, int startY, char startChar);
+
+    void moveGhost(vector<vector<char>>& game_map, bool cherryEaten) override;
+};
+
 
 #endif //PA2_PACMAN_CGHOST_H

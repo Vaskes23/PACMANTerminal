@@ -9,6 +9,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <ctime>
+#include <memory>
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
@@ -62,7 +63,7 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
             char ch = row[i];
             if (ch == '<') {
                 pacmannumber++;
-            } else if (ch == 'G') {
+            } else if (ch == 'G' || ch == 'A' || ch == 'B' || ch == 'C') {
                 ghostnumber++;
             } else if (ch == '.') {
                 points++;
@@ -287,7 +288,7 @@ void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vecto
 void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
                                      vector<vector<char> > &displayed_map, int &char_index,
                                      vector<char> *&current_direction,
-                                     char &pacman_char, vector<Ghost> &ghosts) {
+                                     char &pacman_char, vector<unique_ptr<Ghost>>& ghosts) {
 
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
@@ -308,10 +309,10 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
     x = new_x;
     y = new_y;
 
-    for (Ghost &ghost: ghosts) {
-        if (x == ghost.x && y == ghost.y && cherryEaten) {
-            ghost.resetPosition(); // Method to reset the position of the ghost
-            pointsEaten += 10; // Pacman gains 10 points
+    for (auto& ghostPtr : ghosts) {
+        if (x == ghostPtr->x && y == ghostPtr->y && cherryEaten) {
+            ghostPtr->resetPosition();
+            pointsEaten += 10;
         }
     }
 
@@ -335,18 +336,32 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     bool gameEnd = false;
     int score = cherrysEaten + pointsEaten, highlight = 0;
 
-    vector<Ghost> ghosts;
+    vector<unique_ptr<Ghost>> ghosts;
+
+    int ghostCounter = 0;
 
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
             if (gameMap[i][j] == 'G') {
-                ghosts.push_back(Ghost(j, i, gameMap[i][j]));
+                switch(ghostCounter % 3) {
+                    case 0:
+                        ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j]));
+                        break;
+                    case 1:
+                        ghosts.push_back(make_unique<GhostB>(j, i, gameMap[i][j]));
+                        break;
+                    case 2:
+                        ghosts.push_back(make_unique<GhostC>(j, i, gameMap[i][j]));
+                        break;
+                }
+                ghostCounter++;
             }
         }
     }
 
-    while (!gameEnd) {
 
+
+    while (!gameEnd) {
         int new_x = x, new_y = y;
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
@@ -361,28 +376,30 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
             cherryEaten = false;
-            for (Ghost &ghost: ghosts) {
-                displayedMap[ghost.y][ghost.x] = 'G';
+            for (auto& ghostPtr: ghosts) {
+                displayedMap[ghostPtr->y][ghostPtr->x] = 'G';
             }
         }
 
-        for (Ghost &ghost: ghosts) {
-            int old_ghost_x = ghost.x;
-            int old_ghost_y = ghost.y;
-            ghost.moveGhost(gameMap, cherryEaten);
+
+        for (auto& ghostPtr: ghosts) {
+            int old_ghost_x = ghostPtr->x;
+            int old_ghost_y = ghostPtr->y;
+            ghostPtr->moveGhost(gameMap, cherryEaten);
             displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
             if (cherryEaten) {
-                displayedMap[ghost.y][ghost.x] = 'R';
+                displayedMap[ghostPtr->y][ghostPtr->x] = 'R';
             } else {
-                displayedMap[ghost.y][ghost.x] = 'G';
+                displayedMap[ghostPtr->y][ghostPtr->x] = 'G';
             }
         }
+
 
         handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);
 
-        for (Ghost &ghost: ghosts) {
-            if (x == ghost.x && y == ghost.y) {
+        for (auto& ghostPtr: ghosts) {
+            if (x == ghostPtr->x && y == ghostPtr->y) {
                 pacmanLives--;
                 if (pacmanLives <= 0) {
                     gameEnd = true;

@@ -147,11 +147,14 @@ public:
      * @param game_map[in] - The map of the game stored in a vector of vectors of chars
      * @param displayed_map[in] - The map of the game displayed in a vector of vectors of chars
      * @param char_index[in] - The index of the current direction of the pacman
+     * @param current_direction[in] - The current direction of the pacman
+     * @param pacman_char[in] - The char which represents the pacman
+     * @param ghosts[in] - The unique vector of ghosts
      */
     void handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                  vector<vector<char> > &displayed_map, int &char_index,
-                                  vector<char> *&current_direction,
-                                  char &pacman_char, vector<Ghost> &ghosts);
+                                         vector<vector<char> > &displayed_map, int &char_index,
+                                         vector<char> *&current_direction,
+                                         char &pacman_char, vector<unique_ptr<Ghost>>& ghosts);
 
     /**
      * @brief This struct represents an entry in the high scores file.
