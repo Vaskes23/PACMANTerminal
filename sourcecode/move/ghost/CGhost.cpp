@@ -109,13 +109,55 @@ void Ghost::resetPosition() {
 }
 
 
-GhostA::GhostA(int startX, int startY, char startChar) : Ghost(startX, startY, startChar) {}
+GhostA::GhostA(int startX, int startY, char startChar, int* p_x, int* p_y)
+        : Ghost(startX, startY, startChar), pacman_x(p_x), pacman_y(p_y) {}
 
-void GhostA::moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEaten) {
+void GhostA::moveGhost(vector<vector<char>>& game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
-    bool isStuck = getNewDirection(game_map, new_x, new_y, newChar);
+    bool isStuck = true;
+    vector<int> directions;
+
+    if (*pacman_x > x && game_map[y][x + 1] != WALL && game_map[y][x + 1] != TELEPORT) {
+        directions.push_back(KEY_RIGHT);
+    } else if (*pacman_x < x && game_map[y][x - 1] != WALL && game_map[y][x - 1] != TELEPORT) {
+        directions.push_back(KEY_LEFT);
+    }
+    if (*pacman_y > y && game_map[y + 1][x] != WALL && game_map[y + 1][x] != TELEPORT) {
+        directions.push_back(KEY_DOWN);
+    } else if (*pacman_y < y && game_map[y - 1][x] != WALL && game_map[y - 1][x] != TELEPORT) {
+        directions.push_back(KEY_UP);
+    }
+
+    for (int direction: directions) {
+        switch (direction) {
+            case KEY_UP:
+                new_y--;
+                newChar = game_map[new_y][new_x];
+                isStuck = false;
+                break;
+            case KEY_DOWN:
+                new_y++;
+                newChar = game_map[new_y][new_x];
+                isStuck = false;
+                break;
+            case KEY_LEFT:
+                new_x--;
+                newChar = game_map[new_y][new_x];
+                isStuck = false;
+                break;
+            case KEY_RIGHT:
+                new_x++;
+                newChar = game_map[new_y][new_x];
+                isStuck = false;
+                break;
+        }
+        if (!isStuck) {
+            lastDirection = direction;
+            break;
+        }
+    }
 
     if (!isStuck) {
         game_map[y][x] = EMPTY_SPACE;
@@ -127,8 +169,6 @@ void GhostA::moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEate
     }
 
     game_map[y][x] = previousChar;
-    x = new_x;
-    y = new_y;
 }
 
 GhostB::GhostB(int startX, int startY, char startChar) : Ghost(startX, startY, startChar) {}
@@ -145,7 +185,7 @@ void GhostB::moveGhost(std::vector<std::vector<char>>& game_map, bool cherryEate
         y = new_y;
         previousChar = newChar;
     } else {
-//        getStuck(new_x, new_y, newChar, game_map);
+        getStuck(new_x, new_y, newChar, game_map);
     }
 
     game_map[y][x] = previousChar;

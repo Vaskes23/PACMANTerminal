@@ -56,9 +56,13 @@ protected:
 
 class GhostA : public Ghost {
 public:
-    GhostA(int startX, int startY, char startChar);
+    GhostA(int startX, int startY, char startChar, int* p_x, int* p_y);
 
     void moveGhost(vector<vector<char>>& game_map, bool cherryEaten) override;
+
+private:
+    int* pacman_x;
+    int* pacman_y;
 };
 
 class GhostB : public Ghost {

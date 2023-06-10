@@ -345,7 +345,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             if (gameMap[i][j] == 'G') {
                 switch(ghostCounter % 3) {
                     case 0:
-                        ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j]));
+                        ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &x, &y));
                         break;
                     case 1:
                         ghosts.push_back(make_unique<GhostB>(j, i, gameMap[i][j]));
