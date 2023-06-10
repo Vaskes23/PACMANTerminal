@@ -294,17 +294,17 @@ void GhostC::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
-        bool isStuck = getNewDirection(game_map, new_x, new_y, newChar);
+    bool isStuck = getNewDirection(game_map, new_x, new_y, newChar);
 
-        if (!isStuck) {
-            x = new_x;
-            y = new_y;
-            previousChar = newChar;
-        } else {
-            getStuck(new_x, new_y, newChar, game_map);
-        }
-
-        game_map[y][x] = previousChar;
+    if (!isStuck) {
         x = new_x;
         y = new_y;
+        previousChar = newChar;
+    } else {
+        getStuck(new_x, new_y, newChar, game_map);
     }
+
+    game_map[y][x] = previousChar;
+    x = new_x;
+    y = new_y;
+}

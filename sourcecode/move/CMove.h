@@ -28,6 +28,9 @@ class Ghost;
 class CMove : public CPacManGame {
 public:
 
+    /**
+     * \brief This function is read the configuration file of the pacman game.
+     */
     void readConfig();
 
     /**
@@ -157,9 +160,9 @@ public:
      * @param ghosts[in] - The unique vector of ghosts
      */
     void handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                         vector<vector<char> > &displayed_map, int &char_index,
-                                         vector<char> *&current_direction,
-                                         char &pacman_char, vector<unique_ptr<Ghost>>& ghosts);
+                                  vector<vector<char> > &displayed_map, int &char_index,
+                                  vector<char> *&current_direction,
+                                  char &pacman_char, vector<unique_ptr<Ghost>> &ghosts);
 
     /**
      * @brief This struct represents an entry in the high scores file.
@@ -212,11 +215,12 @@ public:
     */
     void resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar);
 
+
+    double defaultMoveDelay; /**< The default move delay */
 private:
-    int totalCherries = 0;
-    int totalPoints = 0;
-     int abilityTime;
-     bool defaultMoveDelay;
+    int totalCherries = 0; /**< The total number of cherries in the game */
+    int totalPoints = 0; /**< The total number of points in the game */
+    int abilityTime; /**< The time of the ability */
 };
 
 
