@@ -315,7 +315,6 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
             pointsEaten += 10;
         }
     }
-
     displayed_map[y][x] = pacman_char;
 }
 
@@ -354,11 +353,12 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                         ghosts.push_back(make_unique<GhostC>(j, i, gameMap[i][j]));
                         break;
                 }
+                gameMap[i][j] = EMPTY_SPACE;
+                displayedMap[i][j] = EMPTY_SPACE;
                 ghostCounter++;
             }
         }
     }
-
 
     while (!gameEnd) {
         int new_x = x, new_y = y;
@@ -384,14 +384,14 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             int old_ghost_x = ghostPtr->x;
             int old_ghost_y = ghostPtr->y;
             ghostPtr->moveGhost(gameMap, cherryEaten);
-            displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE; // chat gpt change it instead of a empty space to the character that was there before ghost was there
+
+            displayedMap[old_ghost_y][old_ghost_x] = gameMap[old_ghost_y][old_ghost_x]; // chat gpt change it instead of a empty space to the character that was there before ghost was there
             if (cherryEaten) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'R';
             } else {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'G';
             }
         }
-
 
         handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);

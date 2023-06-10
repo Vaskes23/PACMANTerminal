@@ -195,7 +195,6 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
             isStuck = getNewDirection(game_map, new_x, new_y, newChar);
         }
         if (!isStuck) {
-            game_map[y][x] = EMPTY_SPACE;
             x = new_x;
             y = new_y;
             previousChar = newChar;
@@ -275,7 +274,6 @@ void GhostB::moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEate
         }
 
         if (!isStuck) {
-            game_map[y][x] = EMPTY_SPACE;
             x = new_x;
             y = new_y;
             previousChar = newChar;
@@ -299,7 +297,6 @@ void GhostC::moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEate
         bool isStuck = getNewDirection(game_map, new_x, new_y, newChar);
 
         if (!isStuck) {
-            game_map[y][x] = EMPTY_SPACE;
             x = new_x;
             y = new_y;
             previousChar = newChar;
