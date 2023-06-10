@@ -56,11 +56,11 @@ void CPrint::displayPauseMenu(WINDOW *win, int highlight) {
 }
 
 void CPrint::displayMenu(WINDOW *win, int highlight) {
-    string choices[4] = {"PLAY", "SCORE BOARD", "SETTINGS", "EXIT"};
+    string choices[4] = {"PLAY", "SCORE BOARD", "EXIT"};
     int x = 4, y = 2;
 
     box(win, 0, 0);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         if (i == highlight)
             wattron(win, A_REVERSE);
         mvwprintw(win, y, x, "%s", choices[i].c_str());
@@ -117,12 +117,12 @@ string CPrint::mainMenu() {
         switch (c) {
             case KEY_UP:
                 if (highlight == 0)
-                    highlight = 3;
+                    highlight = 2;  // change from 3 to 2
                 else
                     --highlight;
                 break;
             case KEY_DOWN:
-                if (highlight == 3) {
+                if (highlight == 2) {  // change from 3 to 2
                     highlight = 0;
                 } else
                     ++highlight;
@@ -140,16 +140,11 @@ string CPrint::mainMenu() {
             getch();
             wclear(menu_win);
             choice = -1;  // Reset choice so main menu is displayed again
-        } else if (choice == 2) {  // SETTINGS option
-            string difficulty = settingsMenu();
-            choice = -1;  // Reset choice so main menu is displayed again
-            displayMenu(menu_win, highlight);  // Refresh the main menu
-        } else if (choice == 3) {
+        } else if (choice == 2) {  // EXIT option, was 3 previously
             endwin();
             exit(0);
         }
     }
-
     return name;
 }
 
@@ -161,16 +156,30 @@ void CPrint::displayScoreBoard(WINDOW *win, const string &scoreboard) {
 }
 
 void CPrint::displaySettingsMenu(WINDOW *win, int highlight) {
-    string choices[3] = {"EASY", "MEDIUM", "HARD"};
-    int x = 4, y = 2;
+    string choices[3] = {"EASY\n10s cooldown, slow enemy",
+                         "MEDIUM\n7s cooldown, normal enemy",
+                         "HARD\n5s cooldown, fast enemy"};
 
     box(win, 0, 0);
     for (int i = 0; i < 3; i++) {
         if (i == highlight)
             wattron(win, A_REVERSE);
-        mvwprintw(win, y, x, "%s", choices[i].c_str());
+
+        // Split the option into two lines
+        size_t breakPos = choices[i].find("\n");
+        string firstLine = choices[i].substr(0, breakPos);
+        string secondLine = choices[i].substr(breakPos + 1);
+
+        // Calculate start position for each line to be centered
+        int x1 = (getmaxx(win) - firstLine.size()) / 2;
+        int x2 = (getmaxx(win) - secondLine.size()) / 2;
+        int y = 2 * (i + 1);  // Each choice will occupy two lines
+
+        // Print the option
+        mvwprintw(win, y, x1, "%s", firstLine.c_str());
+        mvwprintw(win, y + 1, x2, "%s", secondLine.c_str());
+
         wattroff(win, A_REVERSE);
-        y += 2;
     }
     wrefresh(win);
 }
@@ -219,5 +228,6 @@ string CPrint::settingsMenu() {
     }
 
     destroy_win(menu_win);
+    clear();
     return difficulty;
 }

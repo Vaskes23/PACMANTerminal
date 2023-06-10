@@ -96,6 +96,7 @@ public:
      * \brief This function handles the interaction with the settings menu.
      */
     string settingsMenu();
+
 };
 
 #endif //PA2_PACMAN_CPRINT_H

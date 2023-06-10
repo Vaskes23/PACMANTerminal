@@ -212,7 +212,7 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
 GhostB::GhostB(int startX, int startY, char startChar, int *p_x, int *p_y)
         : Ghost(startX, startY, startChar), pacman_x(p_x), pacman_y(p_y) {}
 
-void GhostB::moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) {
+void GhostB::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
@@ -290,7 +290,7 @@ void GhostB::moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEate
 
 GhostC::GhostC(int startX, int startY, char startChar) : Ghost(startX, startY, startChar) {}
 
-void GhostC::moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) {
+void GhostC::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
 

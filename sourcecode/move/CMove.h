@@ -11,6 +11,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <map>
 
 #include <ncurses.h>
 
@@ -18,7 +19,7 @@
 #include "../print/CPrint.h"
 #include "ghost/CGhost.h"
 
-class Ghost; // Forward declaration of Ghost
+class Ghost;
 
 /**
  * \class CMove
@@ -26,6 +27,9 @@ class Ghost; // Forward declaration of Ghost
  */
 class CMove : public CPacManGame {
 public:
+
+    void readConfig();
+
     /**
     * \brief This function initializes the window and curses.
      * \param height[in] - The height of the window
@@ -60,6 +64,7 @@ public:
     * \param filename[in] - The name of the file
     */
     vector<vector<char> > readMapFromFile(const string &filename);
+
 
     /**
     * \brief This function finds the initial position of the pacman.
@@ -210,6 +215,8 @@ public:
 private:
     int totalCherries = 0;
     int totalPoints = 0;
+     int abilityTime;
+     bool defaultMoveDelay;
 };
 
 

@@ -27,6 +27,9 @@ bool cherryEaten = false;
 pair<int, int> teleport[2];
 pair<int, int> pacmanInitPos;
 
+map<string, pair<int, double>> difficultySettings;
+
+
 bool teleport_exists = false;
 
 using namespace std;
@@ -93,6 +96,24 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
     totalCherries = cherrys;
     return game_map;
 }
+
+void CMove::readConfig() {
+    ifstream config("../configurationFiles/gameFunctionalitySetup.txt");
+    string line;
+    while (getline(config, line)) {
+        stringstream ss(line);
+        string difficulty;
+        getline(ss, difficulty, ':');
+        int cooldown;
+        ss >> cooldown;
+        getline(ss, line, ':');  // discard ':'
+        double speed;
+        ss >> speed;
+        difficultySettings[difficulty] = std::make_pair(cooldown, speed);
+    }
+    config.close();
+}
+
 
 pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gameMap) {
     int x = -1, y = -1;
@@ -322,7 +343,12 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
+    readConfig();
     clear();
+
+    string difficulty = cPrintInstance.settingsMenu();
+    abilityTime = difficultySettings[difficulty].first;
+    defaultMoveDelay = difficultySettings[difficulty].second;
 
     if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
         cherryEaten = false;
@@ -373,7 +399,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (gameMap[new_y][new_x] == WALL) { continue; }
 
-        if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 10) {
+        if (cherryEaten && time(NULL) - cherryEatenTimestamp >= abilityTime) {
             cherryEaten = false;
             for (auto &ghostPtr: ghosts) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'G';

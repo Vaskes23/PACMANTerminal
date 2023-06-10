@@ -30,7 +30,7 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
     */
-    virtual void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten);
+    virtual void moveGhost(vector<vector<char>> &game_map, bool cherryEaten);
 
 
     /**
