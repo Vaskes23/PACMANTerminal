@@ -288,7 +288,7 @@ void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vecto
 void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
                                      vector<vector<char> > &displayed_map, int &char_index,
                                      vector<char> *&current_direction,
-                                     char &pacman_char, vector<unique_ptr<Ghost>>& ghosts) {
+                                     char &pacman_char, vector<unique_ptr<Ghost>> &ghosts) {
 
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
@@ -309,7 +309,7 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
     x = new_x;
     y = new_y;
 
-    for (auto& ghostPtr : ghosts) {
+    for (auto &ghostPtr: ghosts) {
         if (x == ghostPtr->x && y == ghostPtr->y && cherryEaten) {
             ghostPtr->resetPosition();
             pointsEaten += 10;
@@ -343,7 +343,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
             if (gameMap[i][j] == 'G') {
-                switch(ghostCounter % 3) {
+                switch (ghostCounter % 3) {
                     case 0:
                         ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &x, &y));
                         break;
@@ -358,7 +358,6 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             }
         }
     }
-
 
 
     while (!gameEnd) {
@@ -376,13 +375,13 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
             cherryEaten = false;
-            for (auto& ghostPtr: ghosts) {
+            for (auto &ghostPtr: ghosts) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'G';
             }
         }
 
 
-        for (auto& ghostPtr: ghosts) {
+        for (auto &ghostPtr: ghosts) {
             int old_ghost_x = ghostPtr->x;
             int old_ghost_y = ghostPtr->y;
             ghostPtr->moveGhost(gameMap, cherryEaten);
@@ -398,7 +397,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);
 
-        for (auto& ghostPtr: ghosts) {
+        for (auto &ghostPtr: ghosts) {
             if (x == ghostPtr->x && y == ghostPtr->y) {
                 pacmanLives--;
                 if (pacmanLives <= 0) {

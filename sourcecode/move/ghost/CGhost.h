@@ -25,15 +25,13 @@ class Ghost {
 public:
     Ghost(int startX, int startY, char startChar);
 
-    double moveDelay = 0;
-    const double defaultMoveDelay = 0.3;
-
     /**
     * @brief This function is used to move the ghost on the map
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
     */
     virtual void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten);
+
 
     /**
     * @brief This function is used to reset the position of the ghost
@@ -45,8 +43,9 @@ public:
      */
     virtual ~Ghost() = default;
 
-    int x;
-    int y;
+    int x, y;
+    double moveDelay = 0;
+    const double defaultMoveDelay = 0.3;
 protected:
 
     int getNewDirection(vector<vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
@@ -54,7 +53,6 @@ protected:
     void getStuck(int &new_x, int &new_y, char &newChar, vector<vector<char>> &game_map);
 
     int manhattanDistance(int x1, int y1, int x2, int y2);
-
 
     int lastDirection;
     char previousChar;
