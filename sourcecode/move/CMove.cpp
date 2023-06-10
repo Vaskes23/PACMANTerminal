@@ -63,7 +63,7 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
             char ch = row[i];
             if (ch == '<') {
                 pacmannumber++;
-            } else if (ch == 'G' || ch == 'A' || ch == 'B' || ch == 'C') {
+            } else if (ch == 'G') {
                 ghostnumber++;
             } else if (ch == '.') {
                 points++;
@@ -373,19 +373,18 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (gameMap[new_y][new_x] == WALL) { continue; }
 
-        if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
+        if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 10) {
             cherryEaten = false;
             for (auto &ghostPtr: ghosts) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'G';
             }
         }
 
-
         for (auto &ghostPtr: ghosts) {
             int old_ghost_x = ghostPtr->x;
             int old_ghost_y = ghostPtr->y;
             ghostPtr->moveGhost(gameMap, cherryEaten);
-            displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE;
+            displayedMap[old_ghost_y][old_ghost_x] = EMPTY_SPACE; // chat gpt change it instead of a empty space to the character that was there before ghost was there
             if (cherryEaten) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'R';
             } else {
@@ -471,8 +470,7 @@ void CMove::displayEndGameMessage(bool isWinner) {
     sleep(2);
 }
 
-void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap,
-                                char &pacmanChar) {
+void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {
     x = pacmanInitPos.first;
     y = pacmanInitPos.second;
     displayedMap[y][x] = pacmanChar;

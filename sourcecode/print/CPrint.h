@@ -85,12 +85,17 @@ public:
      */
     void displayScoreBoard(WINDOW *win, const string &scoreboard);
 
+    /**
+     * \brief This function is used to print the settings menu.
+     * \param win[in] - The window in which the map will be printed
+     * \param highlight[in] - The number of the highlighted option
+     */
+    void displaySettingsMenu(WINDOW *win, int highlight);
 
-private:
-    bool lost; /**< Boolean indicating if the game was lost */
-    bool won; /**< Boolean indicating if the game was won */
-    int score; /**< The current score of the player */
-    int lives; /**< The current number of lives of the player */
+    /**
+     * \brief This function handles the interaction with the settings menu.
+     */
+    string settingsMenu();
 };
 
 #endif //PA2_PACMAN_CPRINT_H

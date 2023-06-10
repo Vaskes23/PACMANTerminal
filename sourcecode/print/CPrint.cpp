@@ -26,7 +26,7 @@ void CPrint::destroy_win(WINDOW *local_win) {
 
 void CPrint::displayMap(WINDOW *win, const std::vector<std::vector<char> > &game_map,
                         const std::vector<std::vector<char> > &displayed_map,
-                        std::string game_tag, int cherrysEaten, int pointsEaten, int pacmanLives){
+                        std::string game_tag, int cherrysEaten, int pointsEaten, int pacmanLives) {
     for (int i = 0; i < game_map.size(); ++i) {
         for (int j = 0; j < game_map[i].size(); ++j) {
             mvwaddch(win, i + 1, j + 1, displayed_map[i][j]);
@@ -93,7 +93,6 @@ string CPrint::askGameTag(string &game_tag) {
 }
 
 
-
 string CPrint::mainMenu() {
     WINDOW *menu_win;
     int highlight = 0;
@@ -134,14 +133,17 @@ string CPrint::mainMenu() {
         }
         displayMenu(menu_win, highlight);
         if (choice == 0) {
-                name = askGameTag(game_tag);
-        }
-        else if (choice == 1) {
+            name = askGameTag(game_tag);
+        } else if (choice == 1) {
             string scoreboard = cMoveInstance.getScoreBoard("../configurationFiles/highScore.txt");
             displayScoreBoard(menu_win, scoreboard);
             getch();
             wclear(menu_win);
-            choice = -1;  // Reset choice here so it doesn't default to starting the game
+            choice = -1;  // Reset choice so main menu is displayed again
+        } else if (choice == 2) {  // SETTINGS option
+            string difficulty = settingsMenu();
+            choice = -1;  // Reset choice so main menu is displayed again
+            displayMenu(menu_win, highlight);  // Refresh the main menu
         } else if (choice == 3) {
             endwin();
             exit(0);
@@ -156,4 +158,66 @@ void CPrint::displayScoreBoard(WINDOW *win, const string &scoreboard) {
     box(win, 0, 0);
     mvwprintw(win, 1, 1, "%s", scoreboard.c_str());
     wrefresh(win);
+}
+
+void CPrint::displaySettingsMenu(WINDOW *win, int highlight) {
+    string choices[3] = {"EASY", "MEDIUM", "HARD"};
+    int x = 4, y = 2;
+
+    box(win, 0, 0);
+    for (int i = 0; i < 3; i++) {
+        if (i == highlight)
+            wattron(win, A_REVERSE);
+        mvwprintw(win, y, x, "%s", choices[i].c_str());
+        wattroff(win, A_REVERSE);
+        y += 2;
+    }
+    wrefresh(win);
+}
+
+string CPrint::settingsMenu() {
+    WINDOW *menu_win;
+    int highlight = 0;
+    int choice = -1;
+    int c;
+    string difficulty = "";
+
+    int startx, starty, width, height;
+    height = 10;
+    width = 30;
+    starty = (LINES - height) / 2;
+    startx = (COLS - width) / 2;
+
+    menu_win = newwin(height, width, starty, startx);
+    keypad(menu_win, TRUE);
+    refresh();
+    displaySettingsMenu(menu_win, highlight);
+
+    while (choice == -1) {
+        c = wgetch(menu_win);
+        switch (c) {
+            case KEY_UP:
+                if (highlight == 0)
+                    highlight = 2;
+                else
+                    --highlight;
+                break;
+            case KEY_DOWN:
+                if (highlight == 2) {
+                    highlight = 0;
+                } else
+                    ++highlight;
+                break;
+            case 10:
+                choice = highlight;
+                break;
+        }
+        displaySettingsMenu(menu_win, highlight);
+        if (choice != -1) {
+            difficulty = (choice == 0) ? "EASY" : (choice == 1) ? "MEDIUM" : "HARD";
+        }
+    }
+
+    destroy_win(menu_win);
+    return difficulty;
 }
