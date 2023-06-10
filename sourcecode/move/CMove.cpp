@@ -14,6 +14,7 @@
 #define WALL '#'
 #define EMPTY_SPACE ' '
 #define CHERRY '%'
+#define APPLE '@'
 #define POINT '.'
 #define TELEPORT 'X'
 
@@ -56,7 +57,7 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
     vector<vector<char> > game_map;
     string line;
 
-    int pacmannumber = 0, ghostnumber = 0, points = 0, cherrys = 0, teleport_count = 0;
+    int pacmannumber = 0, ghostnumber = 0, points = 0, cherrys = 0, teleport_count = 0, apples = 0;;
 
     while (getline(file, line)) {
         vector<char> row(line.begin(), line.end());
@@ -68,11 +69,13 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
                 pacmannumber++;
             } else if (ch == 'G') {
                 ghostnumber++;
-            } else if (ch == '.') {
+            } else if (ch == POINT) {
                 points++;
-            } else if (ch == '%') {
+            } else if (ch == CHERRY) {
                 cherrys++;
-            } else if (ch == TELEPORT) {
+            } else if (ch == APPLE) {
+                apples++;
+            }else if (ch == TELEPORT) {
                 teleport[teleport_count] = make_pair(game_map.size() - 1, i);
                 teleport_count++;
                 if (teleport_count > 2) {
@@ -321,6 +324,11 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
         pointsEaten++;
     }
 
+    // Add new behaviour for apple
+    if (game_map[new_y][new_x] == APPLE) {
+        pacmanLives += 1;
+    }
+
     displayed_map[y][x] = EMPTY_SPACE;
     game_map[y][x] = EMPTY_SPACE;
 
@@ -338,6 +346,7 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
     }
     displayed_map[y][x] = pacman_char;
 }
+
 
 void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
