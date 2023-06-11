@@ -4,10 +4,6 @@
 
 #include "CGhost.h"
 
-#define WALL '#'
-#define TELEPORT 'X'
-#define EMPTY_SPACE ' '
-
 using namespace std;
 
 Ghost::Ghost(int startX, int startY, char startChar) : x(startX), y(startY), initialX(startX), initialY(startY),

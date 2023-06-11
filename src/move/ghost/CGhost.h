@@ -15,6 +15,9 @@
 
 #include "../CMove.h"
 
+#define WALL '#'
+#define TELEPORT 'X'
+#define EMPTY_SPACE ' '
 using namespace std;
 
 /**
@@ -34,7 +37,7 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
     */
-    virtual void moveGhost(vector<vector<char>> &game_map, bool cherryEaten);
+    virtual void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten);
 
     /**
     * @brief This function is used to reset the position of the ghost
@@ -64,7 +67,7 @@ protected:
      * @param new_y is the new y coordinate of the ghost
      * @param newChar is the new character of the ghost
     */
-    int getNewDirection(vector<vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
+    int getNewDirection(std::vector<std::vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
 
     /**
     * @brief This function checks if the ghost is stuck and if it is, it gets it unstuck
@@ -73,7 +76,7 @@ protected:
      * @param newChar is the new character of the ghost
      * @param game_map is the map on which the ghost is moving
     */
-    void getStuck(int &new_x, int &new_y, char &newChar, vector<vector<char>> &game_map);
+    void getStuck(int &new_x, int &new_y, char &newChar, std::vector<std::vector<char>> &game_map);
 
     /**
     * @brief This function claculates the manhattan distance between two points
@@ -109,7 +112,7 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
      */
-    void moveGhost(vector<vector<char>> &game_map, bool cherryEaten) override;
+    void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) override;
 
     /**
      * \brief This function is used to get the new direction of the ghost
@@ -118,7 +121,7 @@ public:
      * @param new_y is the new y coordinate of the ghost
      * @param newChar is the new character of the ghost
      */
-    int getNewDirectionPath(vector<vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
+    int getNewDirectionPath(std::vector<std::vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
 
     /**
     * \brief This function is used to set the default move delay of the ghost
@@ -147,7 +150,7 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
      */
-    void moveGhost(vector<vector<char>> &game_map, bool cherryEaten) override;
+    void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) override;
 
 private:
     int *pacman_x; /**< This variable stores the x coordinate of the pacman */
@@ -170,7 +173,7 @@ public:
      * @param game_map is the map on which the ghost is moving
      * @param cherryEaten is a boolean value that tells us if the cherry was eaten or not
      */
-    void moveGhost(vector<vector<char>> &game_map, bool cherryEaten) override;
+    void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) override;
 };
 
 

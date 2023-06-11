@@ -3,34 +3,7 @@
 //
 #include "CMove.h"
 
-#include <ncurses.h>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <unistd.h>
-#include <ctime>
-#include <memory>
-
-#define WALL '#'
-#define EMPTY_SPACE ' '
-#define CHERRY '%'
-#define APPLE '@'
-#define POINT '.'
-#define TELEPORT 'X'
-
 CPrint cPrintInstance;
-
-int cherrysEaten, pointsEaten, pacmanLives = 3;
-
-long cherryEatenTimestamp;
-bool cherryEaten = false;
-
-pair<int, int> teleport[2];
-pair<int, int> pacmanInitPos;
-
-map<string, pair<int, double>> difficultySettings;
-
-bool teleport_exists = false;
 
 using namespace std;
 
@@ -100,7 +73,7 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
 }
 
 void CMove::readConfig() {
-    ifstream config("../configurationFiles/gameFunctionalitySetup.txt");
+    ifstream config("../examples/gameFunctionalitySetup.txt");
     string line;
     while (getline(config, line)) {
         stringstream ss(line);
@@ -142,7 +115,7 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
 
     int max_height, max_width;
 
-    gameMap = readMapFromFile("../configurationFiles/map1.txt");
+    gameMap = readMapFromFile("../examples/map1.txt");
 
     for (int i = 0; i < gameMap.size(); ++i) {
         if (gameMap[i].front() != WALL || gameMap[i].back() != WALL) {
@@ -260,7 +233,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                         }
                     } else if (highlight == 1) {
                         score = cherrysEaten + pointsEaten;
-                        saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
+                        saveCurrentScore("../examples/highScore.txt", gameTag, score);
                         endwin();
                         exit(0);
                     }
@@ -505,7 +478,7 @@ void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &dis
                       int &x, int &y, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar) {
-    gameMap = readMapFromFile("../configurationFiles/map1.txt");
+    gameMap = readMapFromFile("../examples/map1.txt");
     displayedMap = gameMap;
     pacmanInitPos = findPacmanInitialPosition(gameMap);
     x = pacmanInitPos.first;
@@ -529,7 +502,7 @@ void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int scor
         sleep(3);
         clear();
     } else {
-        saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
+        saveCurrentScore("../examples/highScore.txt", gameTag, score);
         clear();
         mvprintw(LINES / 2, (COLS - 10) / 2, "Game Over");
         refresh();

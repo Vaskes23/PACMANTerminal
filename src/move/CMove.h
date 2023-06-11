@@ -12,12 +12,24 @@
 #include <algorithm>
 #include <random>
 #include <map>
+#include <vector>
+#include <fstream>
+#include <unistd.h>
+#include <ctime>
+#include <memory>
 
 #include <ncurses.h>
 
 #include "../CPacManGame.h"
 #include "../print/CPrint.h"
 #include "ghost/CGhost.h"
+
+#define WALL '#'
+#define EMPTY_SPACE ' '
+#define CHERRY '%'
+#define APPLE '@'
+#define POINT '.'
+#define TELEPORT 'X'
 
 class Ghost;
 
@@ -238,8 +250,16 @@ public:
                           vector<char> &pacman_chars_left, char &pacmanChar);
 
 
-    double defaultMoveDelay; /**< The default move delay */
+
 private:
+    double defaultMoveDelay; /**< The default move delay */
+    int cherrysEaten, pointsEaten, pacmanLives = 3; /**< The number of cherries eaten, points eaten and pacman lives */
+    long cherryEatenTimestamp; /**< The timestamp of the cherry eaten */
+    bool cherryEaten = false; /**< The boolean which tells if the cherry was eaten */
+    pair<int, int> teleport[2]; /**< The teleport coordinates */
+    pair<int, int> pacmanInitPos; /**< The initial pacman coordinates */
+    map<string, pair<int, double>> difficultySettings; /**< The map of the difficulty settings */
+    bool teleport_exists = false; /**< The boolean which tells if the teleport exists */
     int totalCherries = 0; /**< The total number of cherries in the game */
     int totalPoints = 0; /**< The total number of points in the game */
     int ghostPoints = 0; /**< The number of points for eating a ghost */

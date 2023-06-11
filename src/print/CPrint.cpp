@@ -4,12 +4,6 @@
 
 #include "CPrint.h"
 
-#include <algorithm>
-#include <sstream>
-#include <ncurses.h>
-#include <string>
-#include <vector>
-
 CMove cMoveInstance;
 
 WINDOW *CPrint::create_newwin(int height, int width, int starty, int startx) {
@@ -133,7 +127,7 @@ string CPrint::mainMenu() {
         if (choice == 0) {
             name = askGameTag(game_tag);
         } else if (choice == 1) {
-            string scoreboard = cMoveInstance.getScoreBoard("../configurationFiles/highScore.txt");
+            string scoreboard = cMoveInstance.getScoreBoard("../examples/highScore.txt");
             displayScoreBoard(menu_win, scoreboard);
             getch();
             wclear(menu_win);

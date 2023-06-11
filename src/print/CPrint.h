@@ -18,7 +18,6 @@
 #include "../CPacManGame.h"
 #include "../move/CMove.h"
 
-using namespace std;
 
 /**
  * \class CPrint
