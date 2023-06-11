@@ -16,7 +16,7 @@
 #include <ncurses.h>
 
 #include "CPrint.h"
-#include "CMove.h"
+#include "ConfigurationManagement.h"
 
 using namespace std;
 

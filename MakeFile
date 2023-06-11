@@ -1,0 +1,33 @@
+# Variables
+CXX = g++
+CXXFLAGS = -std=c++17 -pedantic -fsanitize=address
+LDFLAGS = -lncurses
+OBJS = main.o CPrint.o CUIMenu.o CMove.o CGhost.o ConfigurationManagement.o
+
+# Target
+main: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o main $(OBJS) $(LDFLAGS)
+
+# Individual source files
+main.o: main.cpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
+CPrint.o: CPrint.cpp
+	$(CXX) $(CXXFLAGS) -c CPrint.cpp
+
+CUIMenu.o: CUIMenu.cpp
+	$(CXX) $(CXXFLAGS) -c CUIMenu.cpp
+
+CMove.o: CMove.cpp
+	$(CXX) $(CXXFLAGS) -c CMove.cpp
+
+CGhost.o: CGhost.cpp
+	$(CXX) $(CXXFLAGS) -c CGhost.cpp
+
+ConfigurationManagement.o: ConfigurationManagement.cpp
+	$(CXX) $(CXXFLAGS) -c ConfigurationManagement.cpp
+
+# Clean
+.PHONY: clean
+clean:
+	rm -f $(OBJS) main

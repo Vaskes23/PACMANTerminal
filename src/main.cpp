@@ -57,10 +57,12 @@ int main() {
     int x, y, charIndex;
     char pacmanChar;
 
+    // Initialize game
     cMoveInstanceMain.initializePacman(gameMap, displayedMap, x, y, currentDirection, charIndex,
                                        pacman_chars_up, pacman_chars_down, pacman_chars_right,
                                        pacman_chars_left, pacmanChar);
 
+    // Start game
     cMoveInstanceMain.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up,
                                 pacman_chars_down,
                                 pacman_chars_right, pacman_chars_left, pacmanChar, name);

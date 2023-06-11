@@ -99,3 +99,59 @@ int ConfigurationManagement::getTotalCherries() const {
 int ConfigurationManagement::getTotalPoints() const{
     return totalPoints;
 }
+
+
+void ConfigurationManagement::saveCurrentScore(const string &filename, const string &game_tag, int score) {
+    vector<ConfigurationManagement::ScoreEntry> scores = readHighScores(filename);
+
+    if (scores.size() < 10 || scores.back().score < score) {
+        scores.push_back({game_tag, score});
+
+        sort(scores.begin(), scores.end(),
+             [](const ConfigurationManagement::ScoreEntry &a, const ConfigurationManagement::ScoreEntry &b) {
+                 return a.score > b.score;
+             });
+
+        if (scores.size() > 10) {
+            scores.pop_back();
+        }
+
+        writeHighScores(filename, scores);
+    }
+}
+
+vector<ConfigurationManagement::ScoreEntry> ConfigurationManagement::readHighScores(const string &filename) {
+    ifstream file(filename);
+    vector<ScoreEntry> scores;
+    string line;
+
+    while (getline(file, line)) {
+        istringstream iss(line);
+        ScoreEntry entry;
+        if (!(iss >> entry.game_tag >> entry.score)) {
+            break;
+        }
+        scores.push_back(entry);
+    }
+
+    return scores;
+}
+
+void ConfigurationManagement::writeHighScores(const string &filename, const vector<ConfigurationManagement::ScoreEntry> &scores) {
+    ofstream file(filename);
+
+    for (const auto &entry: scores) {
+        file << entry.game_tag << " " << entry.score << endl;
+    }
+}
+
+string ConfigurationManagement::getScoreBoard(const string &filename) {
+    vector<ScoreEntry> scores = readHighScores(filename);
+
+    stringstream ss;
+    ss << "SCORE BOARD\n";
+    for (int i = 0; i < scores.size(); i++) {
+        ss << i + 1 << ". " << scores[i].game_tag << ": " << scores[i].score << "\n";
+    }
+    return ss.str();
+}

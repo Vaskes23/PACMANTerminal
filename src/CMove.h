@@ -155,41 +155,8 @@ public:
                                   vector<char> *&current_direction,
                                   char &pacman_char, vector<unique_ptr<Ghost>> &ghosts);
 
-    /**
-     * @brief This struct represents an entry in the high scores file.
-     */
-    struct ScoreEntry {
-        string game_tag;
-        int score;
-    };
-
-    /**
-     * @brief This function saves the current score to the high scores file.
-     * @param filename[in] - The name of the high scores file
-     * @param game_tag[in] - The tag of the game
-     * @param score[in] - The score of the game
-     */
-    void saveCurrentScore(const string &filename, const string &game_tag, int score);
-
-    /**
-     * @brief This function reads the high scores from the high scores file.
-     * @param filename[in] - The name of the high scores file
-     */
-    vector<ScoreEntry> readHighScores(const string &filename);
-
-    /**
-     * @brief This function writes the high scores to the high scores file.
-     * @param filename[in] - The name of the high scores file
-     * @param scores[in] - The vector of high scores
-     */
-    void writeHighScores(const string &filename, const vector<ScoreEntry> &scores);
 
 
-    /**
-    * @brief This function displays the high scores.
-     * @param filename[in] - The name of the high scores file
-    */
-    string getScoreBoard(const string &filename);
 
     /**
     * @brief This function displays the end game message.

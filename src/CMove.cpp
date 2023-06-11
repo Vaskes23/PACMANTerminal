@@ -94,24 +94,6 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
     }
 }
 
-void CMove::saveCurrentScore(const string &filename, const string &game_tag, int score) {
-    vector<CMove::ScoreEntry> scores = readHighScores(filename);
-
-    if (scores.size() < 10 || scores.back().score < score) {
-        scores.push_back({game_tag, score});
-
-        sort(scores.begin(), scores.end(),
-             [](const CMove::ScoreEntry &a, const CMove::ScoreEntry &b) {
-                 return a.score > b.score;
-             });
-
-        if (scores.size() > 10) {
-            scores.pop_back();
-        }
-
-        writeHighScores(filename, scores);
-    }
-}
 
 void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
                         int &score) {
@@ -159,7 +141,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                         }
                     } else if (highlight == 1) {
                         score = cherrysEaten + pointsEaten;
-                        saveCurrentScore("../examples/highScore.txt", gameTag, score);
+                        configurationManagementInstance.saveCurrentScore("../examples/highScore.txt", gameTag, score);
                         endwin();
                         exit(0);
                     }
@@ -363,41 +345,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     }
 }
 
-vector<CMove::ScoreEntry> CMove::readHighScores(const string &filename) {
-    ifstream file(filename);
-    vector<ScoreEntry> scores;
-    string line;
 
-    while (getline(file, line)) {
-        istringstream iss(line);
-        ScoreEntry entry;
-        if (!(iss >> entry.game_tag >> entry.score)) {
-            break;
-        }
-        scores.push_back(entry);
-    }
-
-    return scores;
-}
-
-void CMove::writeHighScores(const string &filename, const vector<CMove::ScoreEntry> &scores) {
-    ofstream file(filename);
-
-    for (const auto &entry: scores) {
-        file << entry.game_tag << " " << entry.score << endl;
-    }
-}
-
-string CMove::getScoreBoard(const string &filename) {
-    vector<ScoreEntry> scores = readHighScores(filename);
-
-    stringstream ss;
-    ss << "SCORE BOARD\n";
-    for (int i = 0; i < scores.size(); i++) {
-        ss << i + 1 << ". " << scores[i].game_tag << ": " << scores[i].score << "\n";
-    }
-    return ss.str();
-}
 
 void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
                       int &x, int &y, vector<char> *&currentDirection, int &charIndex,
@@ -427,7 +375,7 @@ void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int scor
         sleep(3);
         clear();
     } else {
-        saveCurrentScore("../examples/highScore.txt", gameTag, score);
+        configurationManagementInstance.saveCurrentScore("../examples/highScore.txt", gameTag, score);
         clear();
         mvprintw(LINES / 2, (COLS - 10) / 2, "Game Over");
         refresh();
