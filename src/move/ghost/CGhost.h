@@ -52,9 +52,9 @@ public:
      */
     virtual ~Ghost() = default;
 
-    int x, y;
-    double moveDelay = 0;
-    double defaultMoveDelay = 0.3;
+    int x, y;  /**< Z and Y coordinated for movement */
+    double moveDelay = 0; /**< Delay for movement of ghosts */
+    double defaultMoveDelay = 0.3;  /**< Delay for movement of ghosts */
 protected:
 
     /**
