@@ -86,7 +86,6 @@ void Ghost::setDefaultMoveDelay(double delay) {
     defaultMoveDelay = delay;
 }
 
-
 void Ghost::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {}
 
 

@@ -20,39 +20,25 @@
 
 #include <ncurses.h>
 
-#include "../CPacManGame.h"
-#include "../print/CPrint.h"
-#include "ghost/CGhost.h"
-
-#define WALL '#'
-#define EMPTY_SPACE ' '
-#define CHERRY '%'
-#define APPLE '@'
-#define POINT '.'
-#define TELEPORT 'X'
+#include "CPrint.h"
+#include "CUIMenu.h"
+#include "CGhost.h"
 
 class Ghost;
+
+using namespace std;
 
 /**
  * \class CMove
  * \brief This class controls how the entities in the game move.
  */
-class CMove : public CPacManGame {
+class CMove{
 public:
 
     /**
      * \brief This function is read the configuration file of the pacman game.
      */
     void readConfig();
-
-    /**
-    * \brief This function initializes the window and curses.
-     * \param height[in] - The height of the window
-     * \param width[in] - The width of the window
-     * \param starty[in] - The starting Y coordinate of the window
-     * \param startx[in] - The starting X coordinate of the window
-    */
-    void initializeWindowAndCurses(int &height, int &width, int &starty, int &startx);
 
     /**
     * \brief This function initializes the pacman.

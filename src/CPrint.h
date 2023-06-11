@@ -12,18 +12,15 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <string>
 
 #include <ncurses.h>
-
-#include "../CPacManGame.h"
-#include "../move/CMove.h"
-
 
 /**
  * \class CPrint
  * \brief This class is used to handle the printing of various game elements in the PacMan game.
  */
-class CPrint : public CPacManGame {
+class CPrint{
 public:
     /**
     * \brief This function is used to print the map of the game.
@@ -37,30 +34,12 @@ public:
                     const std::vector<std::vector<char> > &displayed_map,
                     std::string game_tag, int cherrysEaten, int pointsEaten, int pacmanLives);
 
-    /**
-    * \brief This function is used to print the pause menu.
-    * \param win[in] - The window in which the map will be printed
-    * \param highlight[in] - The number of the highlighted option
-    */
-    void displayPauseMenu(WINDOW *win, int highlight);
-
-    /**
-    * \brief This function is used to print the main menu.
-    * \param win[in] - The window in which the map will be printed
-    * \param highlight[in] - The number of the highlighted option
-    */
-    void displayMenu(WINDOW *win, int highlight);
 
     /**
     * \brief This function is used to get the players game tag.
     * \param game_tag[in] - The tag of the game player
     */
-    string askGameTag(string &game_tag);
-
-    /**
-    * \brief This function is used to print the main menu on the screen.
-    */
-    string mainMenu();
+    std::string askGameTag(std::string &game_tag);
 
     /**
     * \brief This function creates a new window.
@@ -76,26 +55,12 @@ public:
     */
     void destroy_win(WINDOW *local_win);
 
-
     /**
      * \brief This function is used to display the scoreboard.
      * \param win[in] - The window in which the scoreboard will be displayed
      * \param scoreboard[in] - The scoreboard that will be displayed
      */
-    void displayScoreBoard(WINDOW *win, const string &scoreboard);
-
-    /**
-     * \brief This function is used to print the settings menu.
-     * \param win[in] - The window in which the map will be printed
-     * \param highlight[in] - The number of the highlighted option
-     */
-    void displaySettingsMenu(WINDOW *win, int highlight);
-
-    /**
-     * \brief This function handles the interaction with the settings menu.
-     */
-    string settingsMenu();
-
+    void displayScoreBoard(WINDOW *win, const std::string &scoreboard);
 };
 
 #endif //PA2_PACMAN_CPRINT_H

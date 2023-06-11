@@ -10,10 +10,10 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <random>
 
 #include <ncurses.h>
 
-#include "../CMove.h"
 
 #define WALL '#'
 #define TELEPORT 'X'

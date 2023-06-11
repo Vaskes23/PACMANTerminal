@@ -1,21 +1,14 @@
-#include "print/CPrint.h"
-#include "move/CMove.h"
+#include "CMove.h"
+#include "CUIMenu.h"
 
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-#define WALL '#'
-#define EMPTY_SPACE ' '
-#define CHERRY '%'
-#define POINT '.'
-#define TELEPORT 'X'
-
 using namespace std;
 
-CPrint cPrintInstanceMain;
 CMove cMoveInstanceMain;
-
+CUIMenu CUIMenuInstanceMain;
 
 
 int main() {
@@ -24,10 +17,10 @@ int main() {
     clear();
     noecho();
     cbreak();   // Line buffering disabled. pass on everything
-    string name = cPrintInstanceMain.mainMenu();
+    string name = CUIMenuInstanceMain.mainMenu();
 
     int height, width, starty = 0, startx = 0;
-    cMoveInstanceMain.initializeWindowAndCurses(height, width, starty, startx);
+    CUIMenuInstanceMain.initializeWindowAndCurses(height, width, starty, startx);
 
     // Pac-Man-like characters
     vector<char> pacman_chars_up;
@@ -65,11 +58,12 @@ int main() {
     char pacmanChar;
 
     cMoveInstanceMain.initializePacman(gameMap, displayedMap, x, y, currentDirection, charIndex,
-                     pacman_chars_up, pacman_chars_down, pacman_chars_right,
-                     pacman_chars_left, pacmanChar);
+                                       pacman_chars_up, pacman_chars_down, pacman_chars_right,
+                                       pacman_chars_left, pacmanChar);
 
-    cMoveInstanceMain.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
-              pacman_chars_right, pacman_chars_left, pacmanChar, name);
+    cMoveInstanceMain.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up,
+                                pacman_chars_down,
+                                pacman_chars_right, pacman_chars_left, pacmanChar, name);
 
     endwin();
     return 0;

@@ -3,22 +3,17 @@
 //
 #include "CMove.h"
 
+#define WALL '#'
+#define EMPTY_SPACE ' '
+#define CHERRY '%'
+#define APPLE '@'
+#define POINT '.'
+#define TELEPORT 'X'
+
 CPrint cPrintInstance;
+CUIMenu cUIMenuInstance;
 
 using namespace std;
-
-void CMove::initializeWindowAndCurses(int &height, int &width, int &starty, int &startx) {
-    height = 1500;
-    width = 1500;
-    starty = 0;
-    startx = 0;
-
-    initscr();
-    cbreak();
-    keypad(stdscr, TRUE);
-    curs_set(0);
-    srand(time(NULL));
-}
 
 vector<vector<char> > CMove::readMapFromFile(const string &filename) {
     ifstream file(filename);
@@ -47,7 +42,7 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
                 cherrys++;
             } else if (ch == APPLE) {
                 apples++;
-            }else if (ch == TELEPORT) {
+            } else if (ch == TELEPORT) {
                 teleport[teleport_count] = make_pair(game_map.size() - 1, i);
                 teleport_count++;
                 if (teleport_count > 2) {
@@ -59,8 +54,8 @@ vector<vector<char> > CMove::readMapFromFile(const string &filename) {
     if (pacmannumber != 1) {
         throw runtime_error("The map must have exactly one Pacman ('<')");
     }
-    if (ghostnumber < 1 || ghostnumber > 4) {
-        throw runtime_error("The map must have between 1 and 4 ghosts ('G')");
+    if (ghostnumber < 1 || ghostnumber > 3) {
+        throw runtime_error("The map must have between 1 and 3 ghosts ('G')");
     }
     if (teleport_count == 2) {
         teleport_exists = true;
@@ -203,7 +198,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                 case 'p':
                     paused = !paused;
                     if (paused) {
-                        cPrintInstance.displayPauseMenu(pause_win, highlight);
+                        cUIMenuInstance.displayPauseMenu(pause_win, highlight);
                     } else {
                         wclear(pause_win);
                         wrefresh(pause_win);
@@ -216,7 +211,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                 case 'p':
                     paused = !paused;
                     if (paused) {
-                        cPrintInstance.displayPauseMenu(pause_win, highlight);
+                        cUIMenuInstance.displayPauseMenu(pause_win, highlight);
                     } else {
                         wclear(pause_win);
                         wrefresh(pause_win);
@@ -240,11 +235,11 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                     break;
                 case KEY_UP:
                     highlight = (highlight - 1 + 2) % 2;
-                    cPrintInstance.displayPauseMenu(pause_win, highlight);
+                    cUIMenuInstance.displayPauseMenu(pause_win, highlight);
                     break;
                 case KEY_DOWN:
                     highlight = (highlight + 1) % 2;
-                    cPrintInstance.displayPauseMenu(pause_win, highlight);
+                    cUIMenuInstance.displayPauseMenu(pause_win, highlight);
                     break;
             }
         }
@@ -319,8 +314,6 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
 }
 
 
-
-
 void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
@@ -328,7 +321,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     readConfig();
     clear();
 
-    string difficulty = cPrintInstance.settingsMenu();
+    string difficulty = cUIMenuInstance.settingsMenu();
     abilityTime = difficultySettings[difficulty].first;
     defaultMoveDelay = difficultySettings[difficulty].second;
 
@@ -429,7 +422,8 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             score = cherrysEaten + pointsEaten + ghostPoints;
             displayEndGameMessage(isWinner, gameTag, score);
             if (isWinner) {
-                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex, pacman_chars_up, pacman_chars_down, pacman_chars_right, pacman_chars_left, pacmanChar);
+                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
+                          pacman_chars_right, pacman_chars_left, pacmanChar);
                 gameEnd = false;
                 isWinner = false;
                 continue;
@@ -517,4 +511,6 @@ void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayed
     y = pacmanInitPos.second;
     displayedMap[y][x] = pacmanChar;
 }
+
+
 

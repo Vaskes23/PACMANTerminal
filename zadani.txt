@@ -1,0 +1,20 @@
+Presne specifikace semestralni prace
+Zadani z progtestu
+Strucne pripomenu zadani semestralni prace, me vybrane zadani semestralni prace je udelat hru PacMan, hra se musi ramcove
+drzet pravidlum puvodni hry, vyuzit polymofismus, ruzne chovoani duchu, implementace zakladnich hernich mechanik,
+vizualni reprezenrace prvku ve hre, zobrazovat tabulku hracu a konfigurovani ze souboru.
+
+Me rozsireni zadani
+Take jsem se rozhodl pro rozsireni zadani v techto aspektech hry:
+1. Pri zapnuti hry je na zacatky za pomoci ncurses UI interface ve forme interaktivniho menu pro nastaveni jmena,
+obtiznosti, chovani duchu,  spusteni hry atd. V tomto menu se muze hrac orientovat pomoci sipek a s prpinanim se meni
+ barvy tlacitek a po stisknuti enter potvrdi sve volby
+2. Pridani dalsiho bonusoveho ovoce pro dalsi schopnosti, napr. jablka zvysi pacmanovi rychlost, banany mu pridaji zivot
+ a tresne umozni jist duchy jako v originale. Tyto ovoce bude hrac moci nastavit ve soubory ve kterem si bude take moci
+ vytvorit svou vlastni mapu
+
+Popis pouziti polymorfismu ve hre
+Polymofismus ve hre jsem se rozhodl pouzit ve tride CGhost pro ruzne chovani vsech 3 duchu dle nastaveni.
+CGhost muze byt abstraktni tridou s ciste virtualni funkci jako je moveGhost(). Tato funkce by pak byla prepsana v kazde
+podtride, aby implementovala konkretni dovednost, kterou ma kazdy typ ducha jinou (nemuzou byt ve svych souborech kvuli
+circular dependency se souborem CMove.cpp).
