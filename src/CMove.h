@@ -23,6 +23,7 @@
 #include "CPrint.h"
 #include "CUIMenu.h"
 #include "CGhost.h"
+#include "ConfigurationManagement.h"
 
 class Ghost;
 
@@ -35,10 +36,7 @@ using namespace std;
 class CMove{
 public:
 
-    /**
-     * \brief This function is read the configuration file of the pacman game.
-     */
-    void readConfig();
+
 
     /**
     * \brief This function initializes the pacman.
@@ -60,11 +58,6 @@ public:
                           vector<char> &pacman_chars_right,
                           vector<char> &pacman_chars_left, char &pacmanChar);
 
-    /**
-    * \brief This function reads the map from a file.
-    * \param filename[in] - The name of the file
-    */
-    vector<vector<char> > readMapFromFile(const string &filename);
 
 
     /**
@@ -242,12 +235,8 @@ private:
     int cherrysEaten, pointsEaten, pacmanLives = 3; /**< The number of cherries eaten, points eaten and pacman lives */
     long cherryEatenTimestamp; /**< The timestamp of the cherry eaten */
     bool cherryEaten = false; /**< The boolean which tells if the cherry was eaten */
-    pair<int, int> teleport[2]; /**< The teleport coordinates */
     pair<int, int> pacmanInitPos; /**< The initial pacman coordinates */
     map<string, pair<int, double>> difficultySettings; /**< The map of the difficulty settings */
-    bool teleport_exists = false; /**< The boolean which tells if the teleport exists */
-    int totalCherries = 0; /**< The total number of cherries in the game */
-    int totalPoints = 0; /**< The total number of points in the game */
     int ghostPoints = 0; /**< The number of points for eating a ghost */
     int abilityTime; /**< The time of the ability */
 };

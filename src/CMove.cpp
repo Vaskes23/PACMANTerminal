@@ -12,78 +12,9 @@
 
 CPrint cPrintInstance;
 CUIMenu cUIMenuInstance;
+ConfigurationManagement configurationManagementInstance;
 
 using namespace std;
-
-vector<vector<char> > CMove::readMapFromFile(const string &filename) {
-    ifstream file(filename);
-    if (!file.is_open()) {
-        throw runtime_error("Could not open map file");
-    }
-
-    vector<vector<char> > game_map;
-    string line;
-
-    int pacmannumber = 0, ghostnumber = 0, points = 0, cherrys = 0, teleport_count = 0, apples = 0;;
-
-    while (getline(file, line)) {
-        vector<char> row(line.begin(), line.end());
-        game_map.push_back(row);
-
-        for (int i = 0; i < row.size(); ++i) {
-            char ch = row[i];
-            if (ch == '<') {
-                pacmannumber++;
-            } else if (ch == 'G') {
-                ghostnumber++;
-            } else if (ch == POINT) {
-                points++;
-            } else if (ch == CHERRY) {
-                cherrys++;
-            } else if (ch == APPLE) {
-                apples++;
-            } else if (ch == TELEPORT) {
-                teleport[teleport_count] = make_pair(game_map.size() - 1, i);
-                teleport_count++;
-                if (teleport_count > 2) {
-                    throw runtime_error("The map must have exactly two teleportation points ('X')");
-                }
-            }
-        }
-    }
-    if (pacmannumber != 1) {
-        throw runtime_error("The map must have exactly one Pacman ('<')");
-    }
-    if (ghostnumber < 1 || ghostnumber > 3) {
-        throw runtime_error("The map must have between 1 and 3 ghosts ('G')");
-    }
-    if (teleport_count == 2) {
-        teleport_exists = true;
-    } else if (teleport_count > 0) {
-        throw runtime_error("The map must have exactly two teleportation points ('X')");
-    }
-    totalPoints = points;
-    totalCherries = cherrys;
-    return game_map;
-}
-
-void CMove::readConfig() {
-    ifstream config("../examples/gameFunctionalitySetup.txt");
-    string line;
-    while (getline(config, line)) {
-        stringstream ss(line);
-        string difficulty;
-        getline(ss, difficulty, ':');
-        int cooldown;
-        ss >> cooldown;
-        getline(ss, line, ':');  // discard ':'
-        double speed;
-        ss >> speed;
-        difficultySettings[difficulty] = std::make_pair(cooldown, speed);
-    }
-    config.close();
-}
-
 
 pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gameMap) {
     int x = -1, y = -1;
@@ -110,7 +41,7 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
 
     int max_height, max_width;
 
-    gameMap = readMapFromFile("../examples/map1.txt");
+    gameMap = configurationManagementInstance.readMapFromFile("../examples/map1.txt");
 
     for (int i = 0; i < gameMap.size(); ++i) {
         if (gameMap[i].front() != WALL || gameMap[i].back() != WALL) {
@@ -139,13 +70,13 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
                                 vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                                 vector<char> &pacman_chars_right,
                                 vector<char> &pacman_chars_left) {
-    if (game_map[new_y][new_x] == TELEPORT && teleport_exists) {
-        if (new_y == teleport[0].first && new_x == teleport[0].second) {
-            new_y = teleport[1].first;
-            new_x = teleport[1].second;
+    if (game_map[new_y][new_x] == TELEPORT && configurationManagementInstance.getTeleportExists()) {
+        if (new_y == configurationManagementInstance.getTeleport()[0].first && new_x == configurationManagementInstance.getTeleport()[0].second) {
+            new_y = configurationManagementInstance.getTeleport()[1].first;
+            new_x = configurationManagementInstance.getTeleport()[1].second;
         } else {
-            new_y = teleport[0].first;
-            new_x = teleport[0].second;
+            new_y = configurationManagementInstance.getTeleport()[0].first;
+            new_x = configurationManagementInstance.getTeleport()[0].second;
         }
         if (new_x < game_map[0].size() - 1 && game_map[new_y][new_x + 1] != WALL) {
             new_x++;
@@ -318,7 +249,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
-    readConfig();
+    difficultySettings = configurationManagementInstance.readConfig();
     clear();
 
     string difficulty = cUIMenuInstance.settingsMenu();
@@ -413,7 +344,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
         usleep(100000);
 
-        if (cherrysEaten >= totalCherries && pointsEaten >= totalPoints) {
+        if (cherrysEaten >= configurationManagementInstance.getTotalCherries() && pointsEaten >= configurationManagementInstance.getTotalPoints()) {
             isWinner = true;
             gameEnd = true;
         }
@@ -472,7 +403,7 @@ void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &dis
                       int &x, int &y, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar) {
-    gameMap = readMapFromFile("../examples/map1.txt");
+    gameMap = configurationManagementInstance.readMapFromFile("../examples/map1.txt");
     displayedMap = gameMap;
     pacmanInitPos = findPacmanInitialPosition(gameMap);
     x = pacmanInitPos.first;
