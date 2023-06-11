@@ -339,7 +339,7 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
     for (auto &ghostPtr: ghosts) {
         if (x == ghostPtr->x && y == ghostPtr->y && cherryEaten) {
             ghostPtr->resetPosition();
-            pointsEaten += 10;
+            ghostPoints += 10;
         }
     }
     displayed_map[y][x] = pacman_char;
@@ -362,11 +362,6 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     for (auto &ghostPtr: ghosts) {
         ghostPtr->setDefaultMoveDelay(defaultMoveDelay);
     }
-
-
-//    if (cherryEaten && time(NULL) - cherryEatenTimestamp >= abilityTime) {
-//        cherryEaten = false;
-//    }
 
     int ch = 0, last_ch = KEY_RIGHT;
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
@@ -450,13 +445,13 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
         usleep(100000);
 
-        if ((cherrysEaten + pointsEaten) - (totalCherries + totalPoints) == 0) {
+        if (cherrysEaten >= totalCherries && pointsEaten >= totalPoints) {
             isWinner = true;
             gameEnd = true;
         }
 
         if (gameEnd) {
-            score = cherrysEaten + pointsEaten;
+            score = cherrysEaten + pointsEaten + ghostPoints;
             saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
             displayEndGameMessage(isWinner);
         }

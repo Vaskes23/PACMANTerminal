@@ -220,6 +220,7 @@ public:
 private:
     int totalCherries = 0; /**< The total number of cherries in the game */
     int totalPoints = 0; /**< The total number of points in the game */
+    int ghostPoints = 0; /**< The number of points for eating a ghost */
     int abilityTime; /**< The time of the ability */
 };
 

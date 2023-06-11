@@ -61,7 +61,7 @@ int main() {
     vector<char> *currentDirection = &pacman_chars_right;
     vector<vector<char> > gameMap, displayedMap;
 
-    nodelay(stdscr, TRUE); // makes getch() non-blocking
+    nodelay(stdscr, TRUE);
 
     int x, y, charIndex;
     char pacmanChar;
