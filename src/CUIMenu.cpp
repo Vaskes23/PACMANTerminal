@@ -5,7 +5,6 @@
 #include "CUIMenu.h"
 
 CPrint cPrintInstanceMenu;
-//CMove cMoveInstanceMenu;
 ConfigurationManagement configurationManagementMenu;
 
 using namespace std;

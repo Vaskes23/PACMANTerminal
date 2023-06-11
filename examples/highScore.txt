@@ -2,6 +2,8 @@ weg 371
 FUNGUJ! 333
 testincek 296
 krucifix 296
+fe 229
 L.Valgrind 192
+qf 180
 grrrr 96
 DINGO 48

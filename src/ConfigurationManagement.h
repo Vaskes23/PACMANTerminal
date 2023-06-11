@@ -21,7 +21,6 @@
 
 #include <ncurses.h>
 
-//#include "CMove.h"
 
 using namespace std;
 

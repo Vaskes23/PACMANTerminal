@@ -1,33 +1,49 @@
-# Variables
 CXX = g++
 CXXFLAGS = -std=c++17 -pedantic -fsanitize=address
 LDFLAGS = -lncurses
-OBJS = main.o CPrint.o CUIMenu.o CMove.o CGhost.o ConfigurationManagement.o
+OBJS = CPrint.o CGhost.o ConfigurationManagement.o CUIMenu.o CMove.o main.o
+TARGET = vascamat
+DOC_DIR = $(TARGET)/doc
 
-# Target
-main: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o main $(OBJS) $(LDFLAGS)
+# Default target
+all: $(TARGET) doc
 
-# Individual source files
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET)/$(TARGET) $(OBJS) $(LDFLAGS)
 
-CPrint.o: CPrint.cpp
+# srcfiles
+CPrint.o: CPrint.cpp CPrint.h
 	$(CXX) $(CXXFLAGS) -c CPrint.cpp
 
-CUIMenu.o: CUIMenu.cpp
-	$(CXX) $(CXXFLAGS) -c CUIMenu.cpp
-
-CMove.o: CMove.cpp
-	$(CXX) $(CXXFLAGS) -c CMove.cpp
-
-CGhost.o: CGhost.cpp
+CGhost.o: CGhost.cpp CGhost.h
 	$(CXX) $(CXXFLAGS) -c CGhost.cpp
 
-ConfigurationManagement.o: ConfigurationManagement.cpp
+ConfigurationManagement.o: ConfigurationManagement.cpp ConfigurationManagement.h
 	$(CXX) $(CXXFLAGS) -c ConfigurationManagement.cpp
 
-# Clean
+CUIMenu.o: CUIMenu.cpp CUIMenu.h CPrint.h ConfigurationManagement.h
+	$(CXX) $(CXXFLAGS) -c CUIMenu.cpp
+
+CMove.o: CMove.cpp CMove.h CPrint.h CGhost.h ConfigurationManagement.h CUIMenu.h
+	$(CXX) $(CXXFLAGS) -c CMove.cpp
+
+main.o: main.cpp CUIMenu.h CMove.h
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
+.PHONY: compile
+compile: $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)/$(TARGET)
+
 .PHONY: clean
 clean:
-	rm -f $(OBJS) main
+	rm -f $(OBJS) $(TARGET)/$(TARGET)
+	rm -rf $(DOC_DIR)
+
+.PHONY: doc
+doc:
+	mkdir -p $(DOC_DIR)
+	doxygen -s -g && doxygen
+
