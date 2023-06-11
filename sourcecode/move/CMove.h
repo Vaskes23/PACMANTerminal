@@ -203,8 +203,10 @@ public:
     /**
     * @brief This function displays the end game message.
      * @param isWinner[in] - The boolean which tells if the player won the game
+     * @param gameTag[in] - The tag of the game
+     * @param score[in] - The score of the game
     */
-    void displayEndGameMessage(bool isWinner);
+    void displayEndGameMessage(bool isWinner, const string &gameTag, int score);
 
     /**
     * @brief This function resets the pacman position.
@@ -214,6 +216,26 @@ public:
      * @param pacmanChar[in] - The char which represents the pacman
     */
     void resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar);
+
+
+    /**
+    * @brief This function resets the game.
+     * @param gameMap[in] - The map of the game stored in a vector of vectors of chars
+     * @param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
+     * @param x[in] - The X coordinate of the pacman
+     * @param y[in] - The Y coordinate of the pacman
+     * @param currentDirection[in] - The current direction of the pacman
+     * @param charIndex[in] - The index of the current direction of the pacman
+     * @param pacman_chars_up[in] - The vector of chars which represent the pacman when it is moving up
+     * @param pacman_chars_down[in] - The vector of chars which represent the pacman when it is moving down
+     * @param pacman_chars_right[in] - The vector of chars which represent the pacman when it is moving right
+     * @param pacman_chars_left[in] - The vector of chars which represent the pacman when it is moving left
+     * @param pacmanChar[in] - The char which represents the pacman
+    */
+    void resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
+                          int &x, int &y, vector<char> *&currentDirection, int &charIndex,
+                          vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                          vector<char> &pacman_chars_left, char &pacmanChar);
 
 
     double defaultMoveDelay; /**< The default move delay */

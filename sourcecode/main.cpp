@@ -4,8 +4,6 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <unistd.h>
 
 #define WALL '#'
 #define EMPTY_SPACE ' '

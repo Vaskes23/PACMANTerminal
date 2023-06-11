@@ -346,6 +346,8 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
 }
 
 
+
+
 void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                       vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
@@ -452,8 +454,13 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (gameEnd) {
             score = cherrysEaten + pointsEaten + ghostPoints;
-            saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
-            displayEndGameMessage(isWinner);
+            displayEndGameMessage(isWinner, gameTag, score);
+            if (isWinner) {
+                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex, pacman_chars_up, pacman_chars_down, pacman_chars_right, pacman_chars_left, pacmanChar);
+                gameEnd = false;
+                isWinner = false;
+                continue;
+            }
         }
     }
 }
@@ -494,14 +501,42 @@ string CMove::getScoreBoard(const string &filename) {
     return ss.str();
 }
 
-void CMove::displayEndGameMessage(bool isWinner) {
+void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
+                      int &x, int &y, vector<char> *&currentDirection, int &charIndex,
+                      vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                      vector<char> &pacman_chars_left, char &pacmanChar) {
+    gameMap = readMapFromFile("../configurationFiles/map1.txt");
+    displayedMap = gameMap;
+    pacmanInitPos = findPacmanInitialPosition(gameMap);
+    x = pacmanInitPos.first;
+    y = pacmanInitPos.second;
+    currentDirection = &pacman_chars_right;
+    charIndex = 0;
+    pacmanChar = pacman_chars_left[charIndex];
+
+    // Reset game counters
+    cherrysEaten = 0;
+    pointsEaten = 0;
+    cherryEaten = false;
+    ghostPoints = 0;
+}
+
+void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int score) {
     if (isWinner) {
-        mvprintw(LINES / 2, (COLS - 11) / 2, "You Win!");
+        clear();
+        mvprintw(LINES / 2, (COLS - 10) / 2, "You Win!");
+        refresh();
+        sleep(3);
+        clear();
     } else {
-        mvprintw(LINES / 2, (COLS - 9) / 2, "Wasted!");
+        saveCurrentScore("../configurationFiles/highScore.txt", gameTag, score);
+        clear();
+        mvprintw(LINES / 2, (COLS - 10) / 2, "Game Over");
+        refresh();
+        sleep(3);
+        endwin();
+        exit(0);
     }
-    refresh();
-    sleep(2);
 }
 
 void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {

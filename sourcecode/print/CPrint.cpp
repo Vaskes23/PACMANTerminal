@@ -75,13 +75,12 @@ string CPrint::askGameTag(string &game_tag) {
     echo();
     char str[11];
     mvprintw(LINES - 3, 0, "Please enter your game tag (max 10 characters): ");
-    wgetnstr(stdscr, str, 10);  // Only allow 10 characters input
+    wgetnstr(stdscr, str, 10);
 
-    str[10] = '\0'; // ensure null-terminated
+    str[10] = '\0';
     noecho();
     refresh();
 
-    // clear the input line
     for (int i = 0; i < COLS; i++) {
         mvaddch(LINES - 3, i, ' ');
     }
@@ -117,12 +116,12 @@ string CPrint::mainMenu() {
         switch (c) {
             case KEY_UP:
                 if (highlight == 0)
-                    highlight = 2;  // change from 3 to 2
+                    highlight = 2;
                 else
                     --highlight;
                 break;
             case KEY_DOWN:
-                if (highlight == 2) {  // change from 3 to 2
+                if (highlight == 2) {
                     highlight = 0;
                 } else
                     ++highlight;
@@ -139,8 +138,8 @@ string CPrint::mainMenu() {
             displayScoreBoard(menu_win, scoreboard);
             getch();
             wclear(menu_win);
-            choice = -1;  // Reset choice so main menu is displayed again
-        } else if (choice == 2) {  // EXIT option, was 3 previously
+            choice = -1;
+        } else if (choice == 2) {
             endwin();
             exit(0);
         }
@@ -165,17 +164,14 @@ void CPrint::displaySettingsMenu(WINDOW *win, int highlight) {
         if (i == highlight)
             wattron(win, A_REVERSE);
 
-        // Split the option into two lines
         size_t breakPos = choices[i].find("\n");
         string firstLine = choices[i].substr(0, breakPos);
         string secondLine = choices[i].substr(breakPos + 1);
 
-        // Calculate start position for each line to be centered
         int x1 = (getmaxx(win) - firstLine.size()) / 2;
         int x2 = (getmaxx(win) - secondLine.size()) / 2;
-        int y = 2 * (i + 1);  // Each choice will occupy two lines
+        int y = 2 * (i + 1);
 
-        // Print the option
         mvwprintw(win, y, x1, "%s", firstLine.c_str());
         mvwprintw(win, y + 1, x2, "%s", secondLine.c_str());
 
