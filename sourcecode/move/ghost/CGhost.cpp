@@ -86,6 +86,11 @@ void Ghost::getStuck(int &new_x, int &new_y, char &newChar, vector<vector<char>>
     }
 }
 
+void Ghost::setDefaultMoveDelay(double delay) {
+    defaultMoveDelay = delay;
+}
+
+
 void Ghost::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {}
 
 
@@ -102,6 +107,10 @@ int Ghost::manhattanDistance(int x1, int y1, int x2, int y2) {
 GhostA::GhostA(int startX, int startY, char startChar, int *p_x, int *p_y)
         : Ghost(startX, startY, startChar), pacman_x(p_x), pacman_y(p_y) {}
 
+void GhostA::setDefaultMoveDelay(double delay) {
+    defaultMoveDelay = delay;
+}
+
 void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     int new_x = x, new_y = y;
     char newChar = previousChar;
@@ -110,6 +119,14 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     vector<int> directions;
 
     int manhattanDist = manhattanDistance(x, y, *pacman_x, *pacman_y);
+
+    if (!isStuck) {
+        x = new_x;
+        y = new_y;
+        previousChar = newChar;
+        moveDelay = defaultMoveDelay; // Reset move delay
+    }
+
 
     if (moveDelay <= 0) {
         if (manhattanDist <= 12 && !cherryEaten) {
@@ -203,6 +220,8 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
         }
         game_map[y][x] = previousChar;
         moveDelay = defaultMoveDelay;
+    } else if (moveDelay < 0) {
+        moveDelay += defaultMoveDelay; // Reset move delay if it becomes negative
     } else {
         moveDelay -= 0.3;
     }

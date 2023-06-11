@@ -42,13 +42,19 @@ public:
     void resetPosition();
 
     /**
+    * \brief This function is used to set the default move delay of the ghost
+    * @param delay is the new default move delay
+    */
+    virtual void setDefaultMoveDelay(double delay);
+
+    /**
      * @brief Destructor for Ghost
      */
     virtual ~Ghost() = default;
 
     int x, y;
     double moveDelay = 0;
-    const double defaultMoveDelay = 0.3;
+    double defaultMoveDelay = 0.3;
 protected:
 
     /**
@@ -78,6 +84,7 @@ protected:
     */
     int manhattanDistance(int x1, int y1, int x2, int y2);
 
+
     int lastDirection; /**< This variable stores the last direction of the ghost */
     char previousChar;/**< This variable stores the previous character of the ghost */
     int initialX;/**< This variable stores the initial x coordinate of the ghost */
@@ -96,6 +103,7 @@ public:
      */
     GhostA(int startX, int startY, char startChar, int *p_x, int *p_y);
 
+
     /**
      * \brief This function is used to move the ghost on the map
      * @param game_map is the map on which the ghost is moving
@@ -111,6 +119,12 @@ public:
      * @param newChar is the new character of the ghost
      */
     int getNewDirectionPath(vector<vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
+
+    /**
+    * \brief This function is used to set the default move delay of the ghost
+    * @param delay is the new default move delay
+    */
+     void setDefaultMoveDelay(double delay) override;
 
 private:
     int *pacman_x; /**< This variable stores the x coordinate of the pacman */

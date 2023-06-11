@@ -30,7 +30,6 @@ pair<int, int> pacmanInitPos;
 
 map<string, pair<int, double>> difficultySettings;
 
-
 bool teleport_exists = false;
 
 using namespace std;
@@ -324,7 +323,6 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
         pointsEaten++;
     }
 
-    // Add new behaviour for apple
     if (game_map[new_y][new_x] == APPLE) {
         pacmanLives += 1;
     }
@@ -359,9 +357,16 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     abilityTime = difficultySettings[difficulty].first;
     defaultMoveDelay = difficultySettings[difficulty].second;
 
-    if (cherryEaten && time(NULL) - cherryEatenTimestamp >= 7) {
-        cherryEaten = false;
+    vector<unique_ptr<Ghost>> ghosts;
+
+    for (auto &ghostPtr: ghosts) {
+        ghostPtr->setDefaultMoveDelay(defaultMoveDelay);
     }
+
+
+//    if (cherryEaten && time(NULL) - cherryEatenTimestamp >= abilityTime) {
+//        cherryEaten = false;
+//    }
 
     int ch = 0, last_ch = KEY_RIGHT;
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
@@ -370,7 +375,6 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     bool gameEnd = false;
     int score = cherrysEaten + pointsEaten, highlight = 0;
 
-    vector<unique_ptr<Ghost>> ghosts;
 
     int ghostCounter = 0;
 
