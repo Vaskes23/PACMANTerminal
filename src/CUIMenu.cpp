@@ -69,7 +69,7 @@ string CUIMenu::mainMenu() {
         if (choice == 0) {
             name = cPrintInstanceMenu.askGameTag(game_tag);
         } else if (choice == 1) {//display scoreboard
-            string scoreboard = configurationManagementMenu.getScoreBoard("../examples/highScore.txt");
+            string scoreboard = configurationManagementMenu.getScoreBoard("examples/highScore.txt");
             cPrintInstanceMenu.displayScoreBoard(menu_win, scoreboard);
             getch();
             wclear(menu_win);

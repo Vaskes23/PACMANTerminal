@@ -38,6 +38,7 @@ public:
     /**
     * \brief This function is used to get the players game tag.
     * \param game_tag[in] - The tag of the game player
+     * \return The tag of the game player
     */
     std::string askGameTag(std::string &game_tag);
 

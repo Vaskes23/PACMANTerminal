@@ -6,4 +6,5 @@ fe 229
 L.Valgrind 192
 qf 180
 grrrr 96
+ee 80
 DINGO 48

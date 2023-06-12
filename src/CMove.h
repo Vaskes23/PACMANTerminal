@@ -36,8 +36,6 @@ using namespace std;
 class CMove{
 public:
 
-
-
     /**
     * \brief This function initializes the pacman.
      * \param gameMap[in] - The map of the game stored in a vector of vectors of chars
@@ -63,6 +61,7 @@ public:
     /**
     * \brief This function finds the initial position of the pacman.
      * \param gameMap[in] - The map of the game stored in a vector of vectors of chars
+     * \return The initial position of the pacman
     */
     pair<int, int> findPacmanInitialPosition(const vector<vector<char> > &gameMap);
 

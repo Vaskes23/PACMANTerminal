@@ -20,6 +20,10 @@
 
 using namespace std;
 
+/**
+ * \class CUIMenu
+ * \brief This class is used to handle the printing of various game elements in the PacMan game.
+ */
 class CUIMenu {
 
 public:
@@ -55,11 +59,13 @@ public:
 
     /**
     * \brief This function is used to print the main menu on the screen.
+     * \return The selected option
     */
     string mainMenu();
 
     /**
      * \brief This function handles the interaction with the settings menu.
+     * \return The selected option
      */
     string settingsMenu();
 };

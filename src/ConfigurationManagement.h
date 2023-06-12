@@ -33,6 +33,8 @@ public:
 
     /**
      * @brief This struct represents an entry in the high scores file.
+     * @param game_tag[in] - The tag of the game
+     * @param score[in] - The score of the game
      */
     struct ScoreEntry {
         string game_tag;
@@ -41,12 +43,14 @@ public:
 
     /**
      * \brief This function is read the configuration file of the pacman game.
+     * \return Configuration data
      */
     map<string, pair<int, double>> readConfig();
 
     /**
     * \brief This function reads the map from a file.
     * \param filename[in] - The name of the file
+     * \return The map of the game
     */
     vector<vector<char> > readMapFromFile(const string &filename);
 
@@ -87,6 +91,7 @@ public:
     /**
      * @brief This function reads the high scores from the high scores file.
      * @param filename[in] - The name of the high scores file
+     * @return The vector of high scores
      */
     vector<ScoreEntry> readHighScores(const string &filename);
 
@@ -100,6 +105,7 @@ public:
     /**
     * @brief This function displays the high scores.
      * @param filename[in] - The name of the high scores file
+     * @return The string of the high scores
     */
     string getScoreBoard(const string &filename);
 

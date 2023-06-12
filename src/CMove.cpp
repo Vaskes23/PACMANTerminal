@@ -18,6 +18,7 @@ using namespace std;
 
 pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gameMap) {
     int x = -1, y = -1;
+    // find pacman
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
             if (gameMap[i][j] == '<') {
@@ -41,20 +42,23 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
 
     int max_height, max_width;
 
-    gameMap = configurationManagementInstance.readMapFromFile("../examples/map1.txt");
+    gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
 
+    // check if the map is valid
     for (int i = 0; i < gameMap.size(); ++i) {
         if (gameMap[i].front() != WALL || gameMap[i].back() != WALL) {
             throw runtime_error("The walls are not complete in the map");
         }
     }
 
+    // check if the terminal window is big enough for the map
     getmaxyx(stdscr, max_height, max_width);
     if (gameMap.size() >= max_height - 2 || gameMap[0].size() >= max_width - 2) {
         throw runtime_error("The terminal window is not big enough for the map");
     }
     displayedMap = gameMap;
 
+    // initialize pacman
     pacmanInitPos = findPacmanInitialPosition(gameMap);
     x = pacmanInitPos.first;
     y = pacmanInitPos.second;
@@ -78,6 +82,7 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
             new_y = configurationManagementInstance.getTeleport()[0].first;
             new_x = configurationManagementInstance.getTeleport()[0].second;
         }
+        // change direction of pacman after teleport
         if (new_x < game_map[0].size() - 1 && game_map[new_y][new_x + 1] != WALL) {
             new_x++;
             current_direction = &pacman_chars_right;
@@ -124,6 +129,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                 case 'p':
                     paused = !paused;
                     if (paused) {
+                        // display pause menu
                         cUIMenuInstance.displayPauseMenu(pause_win, highlight);
                     } else {
                         wclear(pause_win);
@@ -140,8 +146,9 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                             wrefresh(pause_win);
                         }
                     } else if (highlight == 1) {
+                        // save score to a config file
                         score = cherrysEaten + pointsEaten;
-                        configurationManagementInstance.saveCurrentScore("../examples/highScore.txt", gameTag, score);
+                        configurationManagementInstance.saveCurrentScore("examples/highScore.txt", gameTag, score);
                         endwin();
                         exit(0);
                     }
@@ -194,20 +201,24 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
                                      vector<char> *&current_direction,
                                      char &pacman_char, vector<unique_ptr<Ghost>> &ghosts) {
 
+    // check if pacman is on the same position as cherry
     if (game_map[new_y][new_x] == CHERRY) {
         cherrysEaten++;
         cherryEaten = true;
         cherryEatenTimestamp = time(NULL);
     }
 
+    // check if pacman is on the same position as point
     if (game_map[new_y][new_x] == POINT) {
         pointsEaten++;
     }
 
+    // check if pacman is on the same position as apple
     if (game_map[new_y][new_x] == APPLE) {
         pacmanLives += 1;
     }
 
+    // update maps with empty space
     displayed_map[y][x] = EMPTY_SPACE;
     game_map[y][x] = EMPTY_SPACE;
 
@@ -217,6 +228,7 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
     x = new_x;
     y = new_y;
 
+    // check if pacman is on the same position as ghost
     for (auto &ghostPtr: ghosts) {
         if (x == ghostPtr->x && y == ghostPtr->y && cherryEaten) {
             ghostPtr->resetPosition();
@@ -234,6 +246,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     difficultySettings = configurationManagementInstance.readConfig();
     clear();
 
+    // difficulty settings
     string difficulty = cUIMenuInstance.settingsMenu();
     abilityTime = difficultySettings[difficulty].first;
     defaultMoveDelay = difficultySettings[difficulty].second;
@@ -244,6 +257,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         ghostPtr->setDefaultMoveDelay(defaultMoveDelay);
     }
 
+    //creates cherry
     int ch = 0, last_ch = KEY_RIGHT;
     WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
 
@@ -254,9 +268,11 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
     int ghostCounter = 0;
 
+    //creates ghosts
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
             if (gameMap[i][j] == 'G') {
+                //creates ghosts with different abilities
                 switch (ghostCounter % 3) {
                     case 0:
                         ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &x, &y));
@@ -268,6 +284,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                         ghosts.push_back(make_unique<GhostC>(j, i, gameMap[i][j]));
                         break;
                 }
+                //clears the spawning locations of the ghosts with white space
                 gameMap[i][j] = EMPTY_SPACE;
                 displayedMap[i][j] = EMPTY_SPACE;
                 ghostCounter++;
@@ -275,6 +292,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         }
     }
 
+    //While pacman is alive
     while (!gameEnd) {
         int new_x = x, new_y = y;
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
@@ -288,6 +306,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
         if (gameMap[new_y][new_x] == WALL) { continue; }
 
+        // Handle score and update maps
         if (cherryEaten && time(NULL) - cherryEatenTimestamp >= abilityTime) {
             cherryEaten = false;
             for (auto &ghostPtr: ghosts) {
@@ -295,11 +314,13 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             }
         }
 
+        // Move ghosts
         for (auto &ghostPtr: ghosts) {
             int old_ghost_x = ghostPtr->x;
             int old_ghost_y = ghostPtr->y;
             ghostPtr->moveGhost(gameMap, cherryEaten);
 
+            // Update displayed map
             displayedMap[old_ghost_y][old_ghost_x] = gameMap[old_ghost_y][old_ghost_x]; // chat gpt change it instead of a empty space to the character that was there before ghost was there
             if (cherryEaten) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'R';
@@ -308,9 +329,11 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             }
         }
 
+        // Update score and maps
         handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);
 
+        // Check if pacman is dead
         for (auto &ghostPtr: ghosts) {
             if (x == ghostPtr->x && y == ghostPtr->y) {
                 pacmanLives--;
@@ -323,18 +346,22 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             }
         }
 
+        // Display map
         cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
         usleep(100000);
 
+        // Check if game is over
         if (cherrysEaten >= configurationManagementInstance.getTotalCherries() && pointsEaten >= configurationManagementInstance.getTotalPoints()) {
             isWinner = true;
             gameEnd = true;
         }
 
         if (gameEnd) {
+            // Calculate score
             score = cherrysEaten + pointsEaten + ghostPoints;
             displayEndGameMessage(isWinner, gameTag, score);
             if (isWinner) {
+                // Reset pacman position
                 resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
                           pacman_chars_right, pacman_chars_left, pacmanChar);
                 gameEnd = false;
@@ -351,8 +378,9 @@ void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &dis
                       int &x, int &y, vector<char> *&currentDirection, int &charIndex,
                       vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
                       vector<char> &pacman_chars_left, char &pacmanChar) {
-    gameMap = configurationManagementInstance.readMapFromFile("../examples/map1.txt");
+    gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
     displayedMap = gameMap;
+    // Reset pacman position
     pacmanInitPos = findPacmanInitialPosition(gameMap);
     x = pacmanInitPos.first;
     y = pacmanInitPos.second;
@@ -375,7 +403,7 @@ void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int scor
         sleep(3);
         clear();
     } else {
-        configurationManagementInstance.saveCurrentScore("../examples/highScore.txt", gameTag, score);
+        configurationManagementInstance.saveCurrentScore("examples/highScore.txt", gameTag, score);
         clear();
         mvprintw(LINES / 2, (COLS - 10) / 2, "Game Over");
         refresh();
@@ -386,7 +414,7 @@ void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int scor
 }
 
 void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {
-    x = pacmanInitPos.first;
+    x = pacmanInitPos.first; // reset pacman position
     y = pacmanInitPos.second;
     displayedMap[y][x] = pacmanChar;
 }

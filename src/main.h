@@ -14,6 +14,9 @@
 #include <csignal>
 #include <termios.h>
 
+/**
+ * \brief This function is used to get the input from the user.
+ */
 class main{};
 
 #endif //PA2_PACMAN_MAIN_H

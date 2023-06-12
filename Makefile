@@ -1,16 +1,19 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -pedantic -fsanitize=address
+CXXFLAGS = -std=c++17 -pedantic -fsanitize=address -Iexamples
 LDFLAGS = -lncurses
 OBJS = src/CPrint.o src/CGhost.o src/ConfigurationManagement.o src/CUIMenu.o src/CMove.o src/main.o
 TARGET = vascamat
-DOC_DIR = $(TARGET)/doc
+DOC_DIR = doc
+BIN=./main
+DOXYFILE = Doxyfile
 
 # Default target
-all: $(TARGET) doc
+all: compile doc
+
+compile: $(TARGET)
 
 $(TARGET): $(OBJS)
-	mkdir -p $(TARGET)
-	$(CXX) $(CXXFLAGS) -o $(TARGET)/$(TARGET) $(OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
 # srcfiles
 src/CPrint.o: src/CPrint.cpp src/CPrint.h
@@ -31,19 +34,17 @@ src/CMove.o: src/CMove.cpp src/CMove.h src/CPrint.h src/CGhost.h src/Configurati
 src/main.o: src/main.cpp src/CUIMenu.h src/CMove.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-.PHONY: compile
-compile: $(TARGET)
-
 .PHONY: run
-run:
-	./$(TARGET)/$(TARGET)
+run: compile
+	./$(TARGET)
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET)/$(TARGET)
+	rm -f $(OBJS) $(TARGET)
 	rm -rf $(DOC_DIR)
 
 .PHONY: doc
 doc:
 	mkdir -p $(DOC_DIR)
-	doxygen -s -g && doxygen
+	doxygen $(DOXYFILE)
+

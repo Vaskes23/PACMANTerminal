@@ -11,10 +11,9 @@
 #define POINT '.'
 #define TELEPORT 'X'
 
-//CMove cMoveInstanceConfig;
 
 map<string, pair<int, double>> ConfigurationManagement::readConfig() {
-    ifstream config("../examples/gameFunctionalitySetup.txt");
+    ifstream config("examples/gameFunctionalitySetup.txt");
     string line;
     while (getline(config, line)) {
         stringstream ss(line);
@@ -47,6 +46,7 @@ vector<vector<char> > ConfigurationManagement::readMapFromFile(const string &fil
         vector<char> row(line.begin(), line.end());
         game_map.push_back(row);
 
+        // Count the number of Pacman, Ghosts, Points, Cherrys and Teleports on the map
         for (int i = 0; i < row.size(); ++i) {
             char ch = row[i];
             if (ch == '<') {
@@ -60,6 +60,7 @@ vector<vector<char> > ConfigurationManagement::readMapFromFile(const string &fil
             } else if (ch == APPLE) {
                 apples++;
             } else if (ch == TELEPORT) {
+                // Save the coordinates of the teleportation points
                 teleport[teleport_count] = make_pair(game_map.size() - 1, i);
                 teleport_count++;
                 if (teleport_count > 2) {
@@ -84,6 +85,7 @@ vector<vector<char> > ConfigurationManagement::readMapFromFile(const string &fil
     return game_map;
 }
 
+//getters
 bool ConfigurationManagement::getTeleportExists() const {
     return teleport_exists;
 }
@@ -101,12 +103,15 @@ int ConfigurationManagement::getTotalPoints() const{
 }
 
 
+
 void ConfigurationManagement::saveCurrentScore(const string &filename, const string &game_tag, int score) {
     vector<ConfigurationManagement::ScoreEntry> scores = readHighScores(filename);
 
+    // If there are less than 10 scores or the last score is lower than the current score, add the current score
     if (scores.size() < 10 || scores.back().score < score) {
         scores.push_back({game_tag, score});
 
+        // Sort the scores by score in descending order
         sort(scores.begin(), scores.end(),
              [](const ConfigurationManagement::ScoreEntry &a, const ConfigurationManagement::ScoreEntry &b) {
                  return a.score > b.score;
@@ -125,6 +130,7 @@ vector<ConfigurationManagement::ScoreEntry> ConfigurationManagement::readHighSco
     vector<ScoreEntry> scores;
     string line;
 
+    // Read the scores from the file
     while (getline(file, line)) {
         istringstream iss(line);
         ScoreEntry entry;
@@ -140,6 +146,7 @@ vector<ConfigurationManagement::ScoreEntry> ConfigurationManagement::readHighSco
 void ConfigurationManagement::writeHighScores(const string &filename, const vector<ConfigurationManagement::ScoreEntry> &scores) {
     ofstream file(filename);
 
+    // Write the scores to the file
     for (const auto &entry: scores) {
         file << entry.game_tag << " " << entry.score << endl;
     }
@@ -148,6 +155,7 @@ void ConfigurationManagement::writeHighScores(const string &filename, const vect
 string ConfigurationManagement::getScoreBoard(const string &filename) {
     vector<ScoreEntry> scores = readHighScores(filename);
 
+    // Create a string representation of the score board
     stringstream ss;
     ss << "SCORE BOARD\n";
     for (int i = 0; i < scores.size(); i++) {

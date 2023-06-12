@@ -11,6 +11,7 @@
 #include <vector>
 #include <queue>
 #include <random>
+#include <algorithm>
 
 #include <ncurses.h>
 
@@ -66,6 +67,7 @@ protected:
      * @param new_x is the new x coordinate of the ghost
      * @param new_y is the new y coordinate of the ghost
      * @param newChar is the new character of the ghost
+     * @return The new direction of the ghost
     */
     int getNewDirection(std::vector<std::vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
 
@@ -84,6 +86,7 @@ protected:
      * @param y1 is the y coordinate of the ghost
      * @param x2 is the x coordinate of the pacman
      * @param y2 is the y coordinate of the pacman
+     * @return The manhattan distance between the two points
     */
     int manhattanDistance(int x1, int y1, int x2, int y2);
 
@@ -120,6 +123,7 @@ public:
      * @param new_x is the new x coordinate of the ghost
      * @param new_y is the new y coordinate of the ghost
      * @param newChar is the new character of the ghost
+     * @return the new direction of the ghost
      */
     int getNewDirectionPath(std::vector<std::vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
 

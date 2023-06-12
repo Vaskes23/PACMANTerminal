@@ -6,14 +6,17 @@
 
 using namespace std;
 
+// Constructor for Ghost
 Ghost::Ghost(int startX, int startY, char startChar) : x(startX), y(startY), initialX(startX), initialY(startY),
                                                        lastDirection(KEY_UP), previousChar(startChar) {}
 
 int Ghost::getNewDirection(vector<vector<char>> &game_map, int &new_x, int &new_y, char &newChar) {
     bool isStuck = true;
+    // We shuffle the directions so that the ghosts don't always go in the same direction
     vector<int> directions = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT};
     shuffle(directions.begin(), directions.end(), default_random_engine(random_device{}()));
 
+    // We try to move in every direction until we find a valid one
     for (int direction: directions) {
         switch (direction) {
             case KEY_UP:
@@ -58,6 +61,7 @@ int Ghost::getNewDirection(vector<vector<char>> &game_map, int &new_x, int &new_
 }
 
 void Ghost::getStuck(int &new_x, int &new_y, char &newChar, vector<vector<char>> &game_map) {
+    // If the ghost is stuck, we move it in the opposite direction
     switch (lastDirection) {
         case KEY_UP:
             new_y++;
@@ -95,6 +99,7 @@ void Ghost::resetPosition() {
     lastDirection = KEY_UP;
 }
 
+// Counts the manhattan distance between pacman and ghosts
 int Ghost::manhattanDistance(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
@@ -107,6 +112,8 @@ void GhostA::setDefaultMoveDelay(double delay) {
 }
 
 void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
+
+    // We copy the current position of the ghost
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
@@ -123,6 +130,7 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
     }
 
 
+    // we make ghost move slowwer
     if (moveDelay <= 0) {
         if (manhattanDist <= 12 && !cherryEaten) {
             if (*pacman_x > x && game_map[y][x + 1] != WALL && game_map[y][x + 1] != TELEPORT) {
@@ -136,6 +144,7 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
                 directions.push_back(KEY_UP);
             }
 
+            //
             for (int direction: directions) {
                 switch (direction) {
                     case KEY_UP:
@@ -211,6 +220,7 @@ void GhostA::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
             y = new_y;
             previousChar = newChar;
         } else {
+            // If the ghost is stuck, we try to get it unstuck
             getStuck(new_x, new_y, newChar, game_map);
         }
         game_map[y][x] = previousChar;
@@ -305,6 +315,7 @@ void GhostB::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
 GhostC::GhostC(int startX, int startY, char startChar) : Ghost(startX, startY, startChar) {}
 
 void GhostC::moveGhost(vector<vector<char>> &game_map, bool cherryEaten) {
+    // Ghost C moves randomly
     int new_x = x, new_y = y;
     char newChar = previousChar;
 
