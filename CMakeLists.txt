@@ -3,4 +3,4 @@ project(PA2_PACMAN)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(PA2_PACMAN src/main.cpp src/CUIMenu.cpp src/CUIMenu.h  src/CGhost.cpp src/CGhost.h src/CMove.cpp src/CMove.h src/CPrint.cpp src/CPrint.h src/ConfigurationManagement.cpp src/ConfigurationManagement.h src/main.h)
+add_executable(PA2_PACMAN vascamat/src/main.cpp vascamat/src/CUIMenu.cpp vascamat/src/CUIMenu.h vascamat/src/CGhost.cpp vascamat/src/CGhost.h vascamat/src/CUtilities.cpp vascamat/src/CUtilities.h vascamat/src/CPrint.cpp vascamat/src/CPrint.h vascamat/src/ConfigurationManagement.cpp vascamat/src/ConfigurationManagement.h vascamat/src/main.h)

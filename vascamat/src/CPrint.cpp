@@ -37,33 +37,7 @@ void CPrint::displayMap(WINDOW *win, const std::vector<std::vector<char> > &game
 }
 
 
-string CPrint::askGameTag(string &game_tag) {
-    //The following lines ask the user for a game tag
-    WINDOW *input_win;
-    echo();
-    char str[11];//max 10 characters
-    mvprintw(LINES - 3, 0, "Please enter your game tag (max 10 characters): ");
-    wgetnstr(stdscr, str, 10);
 
-    str[10] = '\0';
-    noecho();
-    refresh();
 
-    for (int i = 0; i < COLS; i++) {
-        mvaddch(LINES - 3, i, ' ');//clear the line
-    }
 
-    mvprintw(LINES - 3, 0, "Game tag: %s", str);
-    game_tag = str;
-    refresh();
-    return game_tag;
-}
-
-void CPrint::displayScoreBoard(WINDOW *win, const string &scoreboard) {
-    //The following lines display the scoreboard
-    wclear(win);
-    box(win, 0, 0);
-    mvwprintw(win, 1, 1, "%s", scoreboard.c_str());
-    wrefresh(win);
-}
 

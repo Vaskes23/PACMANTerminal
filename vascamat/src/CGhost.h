@@ -21,6 +21,12 @@
 #define EMPTY_SPACE ' '
 using namespace std;
 
+
+
+/**
+ * \@file CGhost.h Is responsible for the movement of the ghosts.
+ */
+
 /**
  * \class CGhost
  * \brief This class is the parent class for all the ghosts and it describes all the skills that the ghosts can use interchangeably.

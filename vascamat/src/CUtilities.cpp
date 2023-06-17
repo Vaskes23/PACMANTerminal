@@ -1,7 +1,7 @@
 //
 // Created by Matyas Vascak on 11.05.2023.
 //
-#include "CMove.h"
+#include "CUtilities.h"
 
 #define WALL '#'
 #define EMPTY_SPACE ' '
@@ -10,13 +10,13 @@
 #define POINT '.'
 #define TELEPORT 'X'
 
-CPrint cPrintInstance;
-CUIMenu cUIMenuInstance;
+//CPrint cPrintInstance;
+//CUIMenu cUIMenuInstance;
 ConfigurationManagement configurationManagementInstance;
 
 using namespace std;
 
-pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gameMap) {
+pair<int, int> CUtilities::findPacmanInitialPosition(const vector<vector<char> > &gameMap) {
     int x = -1, y = -1;
     // find pacman
     for (int i = 0; i < gameMap.size(); ++i) {
@@ -34,11 +34,11 @@ pair<int, int> CMove::findPacmanInitialPosition(const vector<vector<char> > &gam
     return make_pair(x, y);
 }
 
-void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
-                             vector<char> *&currentDirection, int &charIndex,
-                             vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
-                             vector<char> &pacman_chars_right,
-                             vector<char> &pacman_chars_left, char &pacmanChar) {
+void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
+                                  vector<char> *&currentDirection, int &charIndex,
+                                  vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
+                                  vector<char> &pacman_chars_right,
+                                  vector<char> &pacman_chars_left, char &pacmanChar) {
 
     int max_height, max_width;
 
@@ -69,11 +69,11 @@ void CMove::initializePacman(vector<vector<char> > &gameMap, vector<vector<char>
     pacmanChar = pacman_chars_left[charIndex];
 }
 
-void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char> > &game_map,
-                                vector<char> *&current_direction,
-                                vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
-                                vector<char> &pacman_chars_right,
-                                vector<char> &pacman_chars_left) {
+void CUtilities::handleTeleportation(int &new_x, int &new_y, const vector<vector<char> > &game_map,
+                                     vector<char> *&current_direction,
+                                     vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
+                                     vector<char> &pacman_chars_right,
+                                     vector<char> &pacman_chars_left) {
     if (game_map[new_y][new_x] == TELEPORT && configurationManagementInstance.getTeleportExists()) {
         if (new_y == configurationManagementInstance.getTeleport()[0].first && new_x == configurationManagementInstance.getTeleport()[0].second) {
             new_y = configurationManagementInstance.getTeleport()[1].first;
@@ -100,8 +100,8 @@ void CMove::handleTeleportation(int &new_x, int &new_y, const vector<vector<char
 }
 
 
-void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
-                        int &score) {
+void CUtilities::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
+                             int &score) {
     ch = getch();
     if (ch != ERR) {
         if (!paused) {
@@ -116,7 +116,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                 case 'p':
                     paused = !paused;
                     if (paused) {
-                        cUIMenuInstance.displayPauseMenu(pause_win, highlight);
+                        displayPauseMenu(pause_win, highlight);
                     } else {
                         wclear(pause_win);
                         wrefresh(pause_win);
@@ -130,7 +130,7 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                     paused = !paused;
                     if (paused) {
                         // display pause menu
-                        cUIMenuInstance.displayPauseMenu(pause_win, highlight);
+                        displayPauseMenu(pause_win, highlight);
                     } else {
                         wclear(pause_win);
                         wrefresh(pause_win);
@@ -155,22 +155,22 @@ void CMove::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, 
                     break;
                 case KEY_UP:
                     highlight = (highlight - 1 + 2) % 2;
-                    cUIMenuInstance.displayPauseMenu(pause_win, highlight);
+                    displayPauseMenu(pause_win, highlight);
                     break;
                 case KEY_DOWN:
                     highlight = (highlight + 1) % 2;
-                    cUIMenuInstance.displayPauseMenu(pause_win, highlight);
+                    displayPauseMenu(pause_win, highlight);
                     break;
             }
         }
     }
 }
 
-void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vector<char> > &game_map,
-                        vector<char> *&current_direction,
-                        vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
-                        vector<char> &pacman_chars_right,
-                        vector<char> &pacman_chars_left) {
+void CUtilities::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vector<char> > &game_map,
+                             vector<char> *&current_direction,
+                             vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
+                             vector<char> &pacman_chars_right,
+                             vector<char> &pacman_chars_left) {
     switch (last_ch) {
         case KEY_LEFT:
             if (new_x > 0 && game_map[new_y][new_x - 1] != WALL)
@@ -196,10 +196,10 @@ void CMove::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vecto
 }
 
 
-void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                     vector<vector<char> > &displayed_map, int &char_index,
-                                     vector<char> *&current_direction,
-                                     char &pacman_char, vector<unique_ptr<Ghost>> &ghosts) {
+void CUtilities::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
+                                          vector<vector<char> > &displayed_map, int &char_index,
+                                          vector<char> *&current_direction,
+                                          char &pacman_char, vector<unique_ptr<Ghost>> &ghosts) {
 
     // check if pacman is on the same position as cherry
     if (game_map[new_y][new_x] == CHERRY) {
@@ -239,15 +239,15 @@ void CMove::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vec
 }
 
 
-void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
-                      vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
-                      vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                      vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
+void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
+                           vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
+                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                           vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
     difficultySettings = configurationManagementInstance.readConfig();
     clear();
 
     // difficulty settings
-    string difficulty = cUIMenuInstance.settingsMenu();
+    string difficulty = settingsMenu();
     abilityTime = difficultySettings[difficulty].first;
     defaultMoveDelay = difficultySettings[difficulty].second;
 
@@ -259,7 +259,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
     //creates cherry
     int ch = 0, last_ch = KEY_RIGHT;
-    WINDOW *pause_win = cPrintInstance.create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
+    WINDOW *pause_win = create_newwin(8, 20, (LINES - 10) / 2, (COLS - 10) / 2);
 
     bool paused = false, isWinner = false;
     bool gameEnd = false;
@@ -347,7 +347,7 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         }
 
         // Display map
-        cPrintInstance.displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
+        displayMap(stdscr, gameMap, displayedMap, gameTag, cherrysEaten, pointsEaten, pacmanLives);
         usleep(100000);
 
         // Check if game is over
@@ -374,10 +374,10 @@ void CMove::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
 
 
-void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
-                      int &x, int &y, vector<char> *&currentDirection, int &charIndex,
-                      vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                      vector<char> &pacman_chars_left, char &pacmanChar) {
+void CUtilities::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
+                           int &x, int &y, vector<char> *&currentDirection, int &charIndex,
+                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                           vector<char> &pacman_chars_left, char &pacmanChar) {
     gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
     displayedMap = gameMap;
     // Reset pacman position
@@ -395,7 +395,7 @@ void CMove::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &dis
     ghostPoints = 0;
 }
 
-void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int score) {
+void CUtilities::displayEndGameMessage(bool isWinner, const string &gameTag, int score) {
     if (isWinner) {
         clear();
         mvprintw(LINES / 2, (COLS - 10) / 2, "You Win!");
@@ -413,7 +413,7 @@ void CMove::displayEndGameMessage(bool isWinner, const string &gameTag, int scor
     }
 }
 
-void CMove::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {
+void CUtilities::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {
     x = pacmanInitPos.first; // reset pacman position
     y = pacmanInitPos.second;
     displayedMap[y][x] = pacmanChar;

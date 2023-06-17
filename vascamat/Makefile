@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -pedantic -fsanitize=address -Iexamples
 LDFLAGS = -lncurses
-OBJS = src/CPrint.o src/CGhost.o src/ConfigurationManagement.o src/CUIMenu.o src/CMove.o src/main.o
+OBJS = src/CPrint.o src/CGhost.o src/ConfigurationManagement.o src/CUIMenu.o src/CUtilities.o src/main.o
 TARGET = vascamat
 DOC_DIR = doc
 BIN=./main
@@ -16,22 +16,22 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
 # srcfiles
-src/CPrint.o: src/CPrint.cpp src/CPrint.h
+src/CPrint.o: src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-src/CGhost.o: src/CGhost.cpp src/CGhost.h
+src/CGhost.o: src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-src/ConfigurationManagement.o: src/ConfigurationManagement.cpp src/ConfigurationManagement.h
+src/ConfigurationManagement.o: src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-src/CUIMenu.o: src/CUIMenu.cpp src/CUIMenu.h src/CPrint.h src/ConfigurationManagement.h
+src/CUIMenu.o: src vascamat/src vascamat/src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-src/CMove.o: src/CMove.cpp src/CMove.h src/CPrint.h src/CGhost.h src/ConfigurationManagement.h src/CUIMenu.h
+src/CUtilities.o: src vascamat/src vascamat/src vascamat/src vascamat/src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-src/main.o: src/main.cpp src/CUIMenu.h src/CMove.h
+src/main.o: src vascamat/src vascamat/src
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: run

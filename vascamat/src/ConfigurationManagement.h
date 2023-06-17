@@ -21,6 +21,9 @@
 
 #include <ncurses.h>
 
+/**
+ * \@file ConfigurationManagement.h Is responsible for the configuration of the game.
+ */
 
 using namespace std;
 
@@ -64,7 +67,7 @@ public:
      * \brief This function is used to get the difficulty settings.
      * \return The map of the difficulty settings
      */
-    pair<int, int>* getTeleport();
+    pair<int, int> *getTeleport();
 
     /**
      * \brief This function is used to get the difficulty settings.
@@ -101,6 +104,13 @@ public:
      * @param scores[in] - The vector of high scores
      */
     void writeHighScores(const string &filename, const vector<ScoreEntry> &scores);
+
+    /**
+     * \brief This function is used to display the scoreboard.
+     * \param win[in] - The window in which the scoreboard will be displayed
+     * \param scoreboard[in] - The scoreboard that will be displayed
+     */
+    void displayScoreBoard(WINDOW *win, const std::string &scoreboard);
 
     /**
     * @brief This function displays the high scores.

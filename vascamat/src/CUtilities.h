@@ -2,8 +2,8 @@
 // Created by Matyas Vascak on 11.05.2023.
 //
 
-#ifndef PA2_PACMAN_CMOVE_H
-#define PA2_PACMAN_CMOVE_H
+#ifndef PA2_PACMAN_CUTILITIES_H
+#define PA2_PACMAN_CUTILITIES_H
 
 #include <cstdlib>
 #include <cstdio>
@@ -22,18 +22,22 @@
 
 #include "CPrint.h"
 #include "CUIMenu.h"
-#include "CGhost.h"
 #include "ConfigurationManagement.h"
+#include "CGhost.h"
 
 class Ghost;
 
 using namespace std;
 
 /**
- * \class CMove
+ * \@file CUtilities.h is responsible for the movement of the entities in the game and functions that enable it.
+ */
+
+/**
+ * \class CUtilities
  * \brief This class controls how the entities in the game move.
  */
-class CMove{
+class CUtilities : protected CUIMenu, protected CPrint {
 public:
 
     /**
@@ -55,7 +59,6 @@ public:
                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                           vector<char> &pacman_chars_right,
                           vector<char> &pacman_chars_left, char &pacmanChar);
-
 
 
     /**
@@ -155,8 +158,6 @@ public:
                                   char &pacman_char, vector<unique_ptr<Ghost>> &ghosts);
 
 
-
-
     /**
     * @brief This function displays the end game message.
      * @param isWinner[in] - The boolean which tells if the player won the game
@@ -190,10 +191,9 @@ public:
      * @param pacmanChar[in] - The char which represents the pacman
     */
     void resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
-                          int &x, int &y, vector<char> *&currentDirection, int &charIndex,
-                          vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                          vector<char> &pacman_chars_left, char &pacmanChar);
-
+                   int &x, int &y, vector<char> *&currentDirection, int &charIndex,
+                   vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                   vector<char> &pacman_chars_left, char &pacmanChar);
 
 
 private:
@@ -208,4 +208,4 @@ private:
 };
 
 
-#endif //PA2_PACMAN_CMOVE_H
+#endif //PA2_PACMAN_CUTILITIES_H

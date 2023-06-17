@@ -2,7 +2,7 @@
 
 using namespace std;
 
-CMove cMoveInstanceMain;
+CUtilities cMoveInstanceMain;
 CUIMenu CUIMenuInstanceMain;
 
 int main() {

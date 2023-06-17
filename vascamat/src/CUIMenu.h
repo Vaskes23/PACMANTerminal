@@ -15,16 +15,19 @@
 
 #include <ncurses.h>
 
-#include "CPrint.h"
 #include "ConfigurationManagement.h"
 
 using namespace std;
 
 /**
+ * \@file CUIMenu.h is responsible for creating menus in the game.
+ */
+
+/**
  * \class CUIMenu
  * \brief This class is used to handle the printing of various game elements in the PacMan game.
  */
-class CUIMenu {
+class CUIMenu: public ConfigurationManagement {
 
 public:
     /**
@@ -44,6 +47,11 @@ public:
     void initializeWindowAndCurses(int &height, int &width, int &starty, int &startx);
 
     /**
+    * \brief This function is used to destroy a window.
+    */
+    void destroy_win(WINDOW *local_win);
+
+    /**
     * \brief This function is used to print the main menu.
     * \param win[in] - The window in which the map will be printed
     * \param highlight[in] - The number of the highlighted option
@@ -58,6 +66,13 @@ public:
     void displaySettingsMenu(WINDOW *win, int highlight);
 
     /**
+    * \brief This function is used to get the players game tag.
+    * \param game_tag[in] - The tag of the game player
+     * \return The tag of the game player
+    */
+    std::string askGameTag(std::string &game_tag);
+
+    /**
     * \brief This function is used to print the main menu on the screen.
      * \return The selected option
     */
@@ -68,6 +83,7 @@ public:
      * \return The selected option
      */
     string settingsMenu();
+
 };
 
 #endif //PA2_PACMAN_CUIMENU_H

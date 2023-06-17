@@ -5,6 +5,6 @@ krucifix 296
 fe 229
 L.Valgrind 192
 qf 180
+dsv 166
+gd 165
 grrrr 96
-ee 80
-DINGO 48

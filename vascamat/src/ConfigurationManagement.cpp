@@ -102,8 +102,6 @@ int ConfigurationManagement::getTotalPoints() const{
     return totalPoints;
 }
 
-
-
 void ConfigurationManagement::saveCurrentScore(const string &filename, const string &game_tag, int score) {
     vector<ConfigurationManagement::ScoreEntry> scores = readHighScores(filename);
 
@@ -150,6 +148,14 @@ void ConfigurationManagement::writeHighScores(const string &filename, const vect
     for (const auto &entry: scores) {
         file << entry.game_tag << " " << entry.score << endl;
     }
+}
+
+void ConfigurationManagement::displayScoreBoard(WINDOW *win, const string &scoreboard) {
+    //The following lines display the scoreboard
+    wclear(win);
+    box(win, 0, 0);
+    mvwprintw(win, 1, 1, "%s", scoreboard.c_str());
+    wrefresh(win);
 }
 
 string ConfigurationManagement::getScoreBoard(const string &filename) {

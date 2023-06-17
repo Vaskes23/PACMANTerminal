@@ -17,6 +17,10 @@
 #include <ncurses.h>
 
 /**
+ * \@file CPrint.h is responsible for printing the game elements like maps etc.
+ */
+
+/**
  * \class CPrint
  * \brief This class is used to handle the printing of various game elements in the PacMan game.
  */
@@ -34,14 +38,6 @@ public:
                     const std::vector<std::vector<char> > &displayed_map,
                     std::string game_tag, int cherrysEaten, int pointsEaten, int pacmanLives);
 
-
-    /**
-    * \brief This function is used to get the players game tag.
-    * \param game_tag[in] - The tag of the game player
-     * \return The tag of the game player
-    */
-    std::string askGameTag(std::string &game_tag);
-
     /**
     * \brief This function creates a new window.
      * \param height[in] - The height of the window
@@ -55,13 +51,6 @@ public:
     * \brief This function is used to destroy a window.
     */
     void destroy_win(WINDOW *local_win);
-
-    /**
-     * \brief This function is used to display the scoreboard.
-     * \param win[in] - The window in which the scoreboard will be displayed
-     * \param scoreboard[in] - The scoreboard that will be displayed
-     */
-    void displayScoreBoard(WINDOW *win, const std::string &scoreboard);
 };
 
 #endif //PA2_PACMAN_CPRINT_H
