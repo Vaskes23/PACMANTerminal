@@ -190,13 +190,11 @@ string CUIMenu::settingsMenu() {
                 choice = highlight;
                 break;
         }
-        //The following lines handle the user choice
         displaySettingsMenu(menu_win, highlight);
         if (choice != -1) {
             difficulty = (choice == 0) ? "EASY" : (choice == 1) ? "MEDIUM" : "HARD";
         }
     }
-    //destroy the window
     destroy_win(menu_win);
     clear();
     return difficulty;

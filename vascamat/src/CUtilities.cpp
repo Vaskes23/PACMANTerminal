@@ -44,17 +44,33 @@ void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<
 
     gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
 
-    // check if the map is valid
+    // Check if the map is valid
     for (int i = 0; i < gameMap.size(); ++i) {
+        // Check every row's front and back
         if (gameMap[i].front() != WALL || gameMap[i].back() != WALL) {
             throw runtime_error("The walls are not complete in the map");
+        }
+        // Check every cell in the row
+        for (int j = 0; j < gameMap[i].size(); ++j) {
+            if (i == 0 || i == gameMap.size() - 1) { // Top and bottom row
+                if (gameMap[i][j] != WALL) {
+                    throw runtime_error("The walls are not complete in the map");
+                }
+            }
         }
     }
 
     // check if the terminal window is big enough for the map
-    getmaxyx(stdscr, max_height, max_width);
-    if (gameMap.size() >= max_height - 2 || gameMap[0].size() >= max_width - 2) {
-        throw runtime_error("The terminal window is not big enough for the map");
+    try {
+        getmaxyx(stdscr, max_height, max_width);
+        if (gameMap.size() >= max_height - 2 || gameMap[0].size() >= max_width - 2) {
+            throw runtime_error("The terminal window is not big enough for the map");
+        }
+    } catch (const runtime_error &e) {
+        cout << "Error: " << e.what() << endl;
+        exit(1);
+
+        return;
     }
     displayedMap = gameMap;
 
@@ -68,6 +84,7 @@ void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<
 
     pacmanChar = pacman_chars_left[charIndex];
 }
+
 
 void CUtilities::handleTeleportation(int &new_x, int &new_y, const vector<vector<char> > &game_map,
                                      vector<char> *&current_direction,
