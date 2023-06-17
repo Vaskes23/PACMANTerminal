@@ -6,5 +6,5 @@ krucifix 296
 sdv 260
 fe 229
 L.Valgrind 192
+jjn 190
 qf 180
-dsv 166

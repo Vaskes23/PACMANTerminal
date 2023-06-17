@@ -36,7 +36,6 @@ pair<int, int> CUtilities::findPacmanInitialPosition(const vector<vector<char> >
 
 void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
                                   vector<char> *&currentDirection, int &charIndex,
-                                  vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                                   vector<char> &pacman_chars_right,
                                   vector<char> &pacman_chars_left, char &pacmanChar) {
 
@@ -379,7 +378,7 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             displayEndGameMessage(isWinner, gameTag, score);
             if (isWinner) {
                 // Reset pacman position
-                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex, pacman_chars_up, pacman_chars_down,
+                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex,
                           pacman_chars_right, pacman_chars_left, pacmanChar);
                 gameEnd = false;
                 isWinner = false;
@@ -393,8 +392,7 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
 void CUtilities::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
                            int &x, int &y, vector<char> *&currentDirection, int &charIndex,
-                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                           vector<char> &pacman_chars_left, char &pacmanChar) {
+                           vector<char> &pacman_chars_right, vector<char> &pacman_chars_left, char &pacmanChar) {
     gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
     displayedMap = gameMap;
     // Reset pacman position

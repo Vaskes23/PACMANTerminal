@@ -56,7 +56,6 @@ public:
     */
     void initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
                           vector<char> *&currentDirection, int &charIndex,
-                          vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                           vector<char> &pacman_chars_right,
                           vector<char> &pacman_chars_left, char &pacmanChar);
 
@@ -192,8 +191,7 @@ public:
     */
     void resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
                    int &x, int &y, vector<char> *&currentDirection, int &charIndex,
-                   vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                   vector<char> &pacman_chars_left, char &pacmanChar);
+                   vector<char> &pacman_chars_right,vector<char> &pacman_chars_left, char &pacmanChar);
 
 
 private:
