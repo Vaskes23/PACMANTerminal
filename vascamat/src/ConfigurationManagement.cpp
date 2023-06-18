@@ -11,6 +11,7 @@
 #define POINT '.'
 #define TELEPORT 'X'
 
+using namespace std;
 
 map<string, pair<int, double>> ConfigurationManagement::readConfig() {
     ifstream config("examples/gameFunctionalitySetup.txt");

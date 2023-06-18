@@ -25,7 +25,6 @@
  * \@file ConfigurationManagement.h Is responsible for the configuration of the game.
  */
 
-using namespace std;
 
 /**
  * \class ConfigurationManagement
@@ -40,7 +39,7 @@ public:
      * @param score[in] - The score of the game
      */
     struct ScoreEntry {
-        string game_tag;
+        std::string game_tag;
         int score;
     };
 
@@ -48,14 +47,14 @@ public:
      * \brief This function is read the configuration file of the pacman game.
      * \return Configuration data
      */
-    map<string, pair<int, double>> readConfig();
+    std::map<std::string, std::pair<int, double>> readConfig();
 
     /**
     * \brief This function reads the map from a file.
     * \param filename[in] - The name of the file
      * \return The map of the game
     */
-    vector<vector<char> > readMapFromFile(const string &filename);
+    std::vector<std::vector<char> > readMapFromFile(const std::string &filename);
 
     /**
      * \brief This function is used to get the difficulty settings.
@@ -67,7 +66,7 @@ public:
      * \brief This function is used to get the difficulty settings.
      * \return The map of the difficulty settings
      */
-    pair<int, int> *getTeleport();
+    std::pair<int, int> *getTeleport();
 
     /**
      * \brief This function is used to get the difficulty settings.
@@ -88,7 +87,7 @@ public:
      * @param game_tag[in] - The tag of the game
      * @param score[in] - The score of the game
      */
-    void saveCurrentScore(const string &filename, const string &game_tag, int score);
+    void saveCurrentScore(const std::string &filename, const std::string &game_tag, int score);
 
 
     /**
@@ -96,14 +95,14 @@ public:
      * @param filename[in] - The name of the high scores file
      * @return The vector of high scores
      */
-    vector<ScoreEntry> readHighScores(const string &filename);
+    std::vector<ScoreEntry> readHighScores(const std::string &filename);
 
     /**
      * @brief This function writes the high scores to the high scores file.
      * @param filename[in] - The name of the high scores file
      * @param scores[in] - The vector of high scores
      */
-    void writeHighScores(const string &filename, const vector<ScoreEntry> &scores);
+    void writeHighScores(const std::string &filename, const std::vector<ScoreEntry> &scores);
 
     /**
      * \brief This function is used to display the scoreboard.
@@ -117,16 +116,15 @@ public:
      * @param filename[in] - The name of the high scores file
      * @return The string of the high scores
     */
-    string getScoreBoard(const string &filename);
+    std::string getScoreBoard(const std::string &filename);
 
 
 protected:
-    map<string, pair<int, double>> difficultySettings; /**< The map of the difficulty settings */
+    std::map<std::string, std::pair<int, double>> difficultySettings; /**< The map of the difficulty settings */
     bool teleport_exists = false; /**< The boolean which tells if the teleport exists */
     int totalCherries = 0; /**< The total number of cherries in the game */
     int totalPoints = 0; /**< The total number of points in the game */
-    pair<int, int> teleport[2]; /**< The teleport coordinates */
-
+    std::pair<int, int> teleport[2]; /**< The teleport coordinates */
 };
 
 

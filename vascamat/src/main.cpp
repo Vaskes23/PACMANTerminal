@@ -33,17 +33,17 @@ int main() {
 
     nodelay(stdscr, TRUE);
 
-    int x, y, charIndex;
+    std::pair<int, int> coord;
+    int charIndex;
     char pacmanChar;
 
     // Initialize game
-    cMoveInstanceMain.initializePacman(gameMap, displayedMap, x, y, currentDirection, charIndex,
+    cMoveInstanceMain.initializePacman(gameMap, displayedMap, coord, currentDirection, charIndex,
                                        pacman_chars_right,pacman_chars_left, pacmanChar);
 
     // Start game
-    cMoveInstanceMain.startGame(x, y, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up,
-                                pacman_chars_down,
-                                pacman_chars_right, pacman_chars_left, pacmanChar, name);
+    cMoveInstanceMain.startGame(coord, gameMap, displayedMap, currentDirection, charIndex, pacman_chars_up,
+                                pacman_chars_down, pacman_chars_right, pacman_chars_left, pacmanChar, name);
 
     endwin();
     return 0;

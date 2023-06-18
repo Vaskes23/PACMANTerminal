@@ -32,10 +32,11 @@ pair<int, int> CUtilities::findPacmanInitialPosition(const vector<vector<char> >
     return make_pair(x, y);
 }
 
-void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
-                                  vector<char> *&currentDirection, int &charIndex,
-                                  vector<char> &pacman_chars_right,
-                                  vector<char> &pacman_chars_left, char &pacmanChar) {
+void
+CUtilities::initializePacman(vector<std::vector<char> > &gameMap, std::vector<std::vector<char> > &displayedMap,
+                             std::pair<int, int> &coord, std::vector<char> *&currentDirection, int &charIndex,
+                             std::vector<char> &pacman_chars_right,
+                             std::vector<char> &pacman_chars_left, char &pacmanChar) {
 
     int max_height, max_width;
 
@@ -73,8 +74,8 @@ void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<
 
     // initialize pacman
     pacmanInitPos = findPacmanInitialPosition(gameMap);
-    x = pacmanInitPos.first;
-    y = pacmanInitPos.second;
+    coord.first = pacmanInitPos.first;
+    coord.second = pacmanInitPos.second;
 
     currentDirection = &pacman_chars_right;
     charIndex = 0;
@@ -83,39 +84,42 @@ void CUtilities::initializePacman(vector<vector<char> > &gameMap, vector<vector<
 }
 
 
-void CUtilities::handleTeleportation(int &new_x, int &new_y, const vector<vector<char> > &game_map,
+void CUtilities::handleTeleportation(pair<int, int> &new_coord, const vector<vector<char> > &game_map,
                                      vector<char> *&current_direction,
                                      vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                                      vector<char> &pacman_chars_right,
                                      vector<char> &pacman_chars_left) {
-    if (game_map[new_y][new_x] == TELEPORT && configurationManagementInstance.getTeleportExists()) {
-        if (new_y == configurationManagementInstance.getTeleport()[0].first && new_x == configurationManagementInstance.getTeleport()[0].second) {
-            new_y = configurationManagementInstance.getTeleport()[1].first;
-            new_x = configurationManagementInstance.getTeleport()[1].second;
+    if (game_map[new_coord.second][new_coord.first] == TELEPORT &&
+        configurationManagementInstance.getTeleportExists()) {
+        if (new_coord.second == configurationManagementInstance.getTeleport()[0].first &&
+            new_coord.first == configurationManagementInstance.getTeleport()[0].second) {
+            new_coord.second = configurationManagementInstance.getTeleport()[1].first;
+            new_coord.first = configurationManagementInstance.getTeleport()[1].second;
         } else {
-            new_y = configurationManagementInstance.getTeleport()[0].first;
-            new_x = configurationManagementInstance.getTeleport()[0].second;
+            new_coord.second = configurationManagementInstance.getTeleport()[0].first;
+            new_coord.first = configurationManagementInstance.getTeleport()[0].second;
         }
         // change direction of pacman after teleport
-        if (new_x < game_map[0].size() - 1 && game_map[new_y][new_x + 1] != WALL) {
-            new_x++;
+        if (new_coord.first < game_map[0].size() - 1 && game_map[new_coord.second][new_coord.first + 1] != WALL) {
+            new_coord.first++;
             current_direction = &pacman_chars_right;
-        } else if (new_x > 0 && game_map[new_y][new_x - 1] != WALL) {
-            new_x--;
+        } else if (new_coord.first > 0 && game_map[new_coord.second][new_coord.first - 1] != WALL) {
+            new_coord.first--;
             current_direction = &pacman_chars_left;
-        } else if (new_y < game_map.size() - 1 && game_map[new_y + 1][new_x] != WALL) {
-            new_y++;
+        } else if (new_coord.second < game_map.size() - 1 && game_map[new_coord.second + 1][new_coord.first] != WALL) {
+            new_coord.second++;
             current_direction = &pacman_chars_down;
-        } else if (new_y > 0 && game_map[new_y - 1][new_x] != WALL) {
-            new_y--;
+        } else if (new_coord.second > 0 && game_map[new_coord.second - 1][new_coord.first] != WALL) {
+            new_coord.second--;
             current_direction = &pacman_chars_up;
         }
     }
 }
 
 
-void CUtilities::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
-                             int &score) {
+void
+CUtilities::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
+                        int &score) {
     ch = getch();
     if (ch != ERR) {
         if (!paused) {
@@ -180,82 +184,83 @@ void CUtilities::handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_
     }
 }
 
-void CUtilities::handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vector<char> > &game_map,
+void CUtilities::handleLogic(pair<int, int> &new_coord, int &last_ch, const vector<vector<char> > &game_map,
                              vector<char> *&current_direction,
                              vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
                              vector<char> &pacman_chars_right,
                              vector<char> &pacman_chars_left) {
     switch (last_ch) {
         case KEY_LEFT:
-            if (new_x > 0 && game_map[new_y][new_x - 1] != WALL)
-                new_x--;
+            if (new_coord.first > 0 && game_map[new_coord.second][new_coord.first - 1] != WALL)
+                new_coord.first--;
             current_direction = &pacman_chars_left;
             break;
         case KEY_RIGHT:
-            if (new_x < game_map[0].size() - 1 && game_map[new_y][new_x + 1] != WALL)
-                new_x++;
+            if (new_coord.first < game_map[0].size() - 1 && game_map[new_coord.second][new_coord.first + 1] != WALL)
+                new_coord.first++;
             current_direction = &pacman_chars_right;
             break;
         case KEY_UP:
-            if (new_y > 0 && game_map[new_y - 1][new_x] != WALL)
-                new_y--;
+            if (new_coord.second > 0 && game_map[new_coord.second - 1][new_coord.first] != WALL)
+                new_coord.second--;
             current_direction = &pacman_chars_up;
             break;
         case KEY_DOWN:
-            if (new_y < game_map.size() - 1 && game_map[new_y + 1][new_x] != WALL)
-                new_y++;
+            if (new_coord.second < game_map.size() - 1 && game_map[new_coord.second + 1][new_coord.first] != WALL)
+                new_coord.second++;
             current_direction = &pacman_chars_down;
             break;
     }
 }
 
 
-void CUtilities::handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
+void CUtilities::handleScoreAndUpdateMaps(pair<int, int> &new_coord, std::pair<int, int> &coord, vector<vector<char> > &game_map,
                                           vector<vector<char> > &displayed_map, int &char_index,
                                           vector<char> *&current_direction,
                                           char &pacman_char, vector<unique_ptr<Ghost>> &ghosts) {
 
     // check if pacman is on the same position as cherry
-    if (game_map[new_y][new_x] == CHERRY) {
+    if (game_map[new_coord.second][new_coord.first] == CHERRY) {
         cherrysEaten++;
         cherryEaten = true;
         cherryEatenTimestamp = time(NULL);
     }
 
     // check if pacman is on the same position as point
-    if (game_map[new_y][new_x] == POINT) {
+    if (game_map[new_coord.second][new_coord.first] == POINT) {
         pointsEaten++;
     }
 
     // check if pacman is on the same position as apple
-    if (game_map[new_y][new_x] == APPLE) {
+    if (game_map[new_coord.second][new_coord.first] == APPLE) {
         pacmanLives += 1;
     }
 
     // update maps with empty space
-    displayed_map[y][x] = EMPTY_SPACE;
-    game_map[y][x] = EMPTY_SPACE;
+    displayed_map[coord.second][coord.first] = EMPTY_SPACE;
+    game_map[coord.second][coord.first] = EMPTY_SPACE;
 
     char_index = (char_index + 1) % current_direction->size();
     pacman_char = (*current_direction)[char_index];
 
-    x = new_x;
-    y = new_y;
+    coord.first = new_coord.first;
+    coord.second = new_coord.second;
 
     // check if pacman is on the same position as ghost
     for (auto &ghostPtr: ghosts) {
-        if (x == ghostPtr->x && y == ghostPtr->y && cherryEaten) {
+        if (coord.first == ghostPtr->x && coord.second == ghostPtr->y && cherryEaten) {
             ghostPtr->resetPosition();
             ghostPoints += 10;
         }
     }
-    displayed_map[y][x] = pacman_char;
+    displayed_map[coord.second][coord.first] = pacman_char;
 }
 
 
-void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
+void CUtilities::startGame(std::pair<int, int> &coord, vector<vector<char> > &gameMap,
                            vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
-                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
+                           vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
+                           vector<char> &pacman_chars_right,
                            vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag) {
     difficultySettings = configurationManagementInstance.readConfig();
     clear();
@@ -290,10 +295,10 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
                 //creates ghosts with different abilities
                 switch (current) {
                     case 'A':
-                        ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &x, &y));
+                        ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &coord.first, &coord.second));
                         break;
                     case 'B':
-                        ghosts.push_back(make_unique<GhostB>(j, i, gameMap[i][j], &x, &y));
+                        ghosts.push_back(make_unique<GhostB>(j, i, gameMap[i][j], &coord.first, &coord.second));
                         break;
                     case 'C':
                         ghosts.push_back(make_unique<GhostC>(j, i, gameMap[i][j]));
@@ -309,17 +314,18 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 
     //While pacman is alive
     while (!gameEnd) {
-        int new_x = x, new_y = y;
+        pair<int, int> new_coord = coord;
         handleInput(ch, last_ch, paused, pause_win, highlight, gameTag, score);
 
         if (paused) { continue; }
 
-        handleLogic(new_x, new_y, last_ch, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
+        handleLogic(new_coord, last_ch, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
                     pacman_chars_right, pacman_chars_left);
-        handleTeleportation(new_x, new_y, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
+
+        handleTeleportation(new_coord, gameMap, currentDirection, pacman_chars_up, pacman_chars_down,
                             pacman_chars_right, pacman_chars_left);
 
-        if (gameMap[new_y][new_x] == WALL) { continue; }
+        if (gameMap[new_coord.second][new_coord.first] == WALL) { continue; }
 
         // Handle score and update maps
         if (cherryEaten && time(NULL) - cherryEatenTimestamp >= abilityTime) {
@@ -336,7 +342,7 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             ghostPtr->moveGhost(gameMap, cherryEaten);
 
             // Update displayed map
-            displayedMap[old_ghost_y][old_ghost_x] = gameMap[old_ghost_y][old_ghost_x]; // chat gpt change it instead of a empty space to the character that was there before ghost was there
+            displayedMap[old_ghost_y][old_ghost_x] = gameMap[old_ghost_y][old_ghost_x];
             if (cherryEaten) {
                 displayedMap[ghostPtr->y][ghostPtr->x] = 'R';
             } else {
@@ -345,17 +351,17 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         }
 
         // Update score and maps
-        handleScoreAndUpdateMaps(new_x, new_y, x, y, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
+        handleScoreAndUpdateMaps(new_coord, coord, gameMap, displayedMap, charIndex, currentDirection, pacmanChar,
                                  ghosts);
 
         // Check if pacman is dead
         for (auto &ghostPtr: ghosts) {
-            if (x == ghostPtr->x && y == ghostPtr->y) {
+            if (coord.first == ghostPtr->x && coord.second == ghostPtr->y) {
                 pacmanLives--;
                 if (pacmanLives <= 0) {
                     gameEnd = true;
                 } else {
-                    resetPacmanPosition(x, y, displayedMap, pacmanChar);
+                    resetPacmanPosition(coord, displayedMap, pacmanChar);
                 }
                 break;
             }
@@ -366,7 +372,8 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
         usleep(100000);
 
         // Check if game is over
-        if (cherrysEaten >= configurationManagementInstance.getTotalCherries() && pointsEaten >= configurationManagementInstance.getTotalPoints()) {
+        if (cherrysEaten >= configurationManagementInstance.getTotalCherries() &&
+            pointsEaten >= configurationManagementInstance.getTotalPoints()) {
             isWinner = true;
             gameEnd = true;
         }
@@ -377,7 +384,7 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
             displayEndGameMessage(isWinner, gameTag, score);
             if (isWinner) {
                 // Reset pacman position
-                resetGame(gameMap, displayedMap, x, y, currentDirection, charIndex,
+                resetGame(gameMap, displayedMap, coord, currentDirection, charIndex,
                           pacman_chars_right, pacman_chars_left, pacmanChar);
                 gameEnd = false;
                 isWinner = false;
@@ -388,16 +395,15 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
 }
 
 
-
 void CUtilities::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
-                           int &x, int &y, vector<char> *&currentDirection, int &charIndex,
+                           std::pair<int, int> &coord, vector<char> *&currentDirection, int &charIndex,
                            vector<char> &pacman_chars_right, vector<char> &pacman_chars_left, char &pacmanChar) {
     gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
     displayedMap = gameMap;
     // Reset pacman position
     pacmanInitPos = findPacmanInitialPosition(gameMap);
-    x = pacmanInitPos.first;
-    y = pacmanInitPos.second;
+    coord.first = pacmanInitPos.first;
+    coord.second = pacmanInitPos.second;
     currentDirection = &pacman_chars_right;
     charIndex = 0;
     pacmanChar = pacman_chars_left[charIndex];
@@ -427,10 +433,10 @@ void CUtilities::displayEndGameMessage(bool isWinner, const string &gameTag, int
     }
 }
 
-void CUtilities::resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar) {
-    x = pacmanInitPos.first; // reset pacman position
-    y = pacmanInitPos.second;
-    displayedMap[y][x] = pacmanChar;
+void CUtilities::resetPacmanPosition(pair<int, int> &coord, vector<vector<char> > &displayedMap, char &pacmanChar) {
+    coord.first = pacmanInitPos.first; // reset pacman position
+    coord.second = pacmanInitPos.second;
+    displayedMap[coord.second][coord.first] = pacmanChar;
 }
 
 

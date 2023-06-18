@@ -19,7 +19,6 @@
 #define WALL '#'
 #define TELEPORT 'X'
 #define EMPTY_SPACE ' '
-using namespace std;
 
 
 
@@ -124,20 +123,10 @@ public:
     void moveGhost(std::vector<std::vector<char>> &game_map, bool cherryEaten) override;
 
     /**
-     * \brief This function is used to get the new direction of the ghost
-     * @param game_map is the map on which the ghost is moving
-     * @param new_x is the new x coordinate of the ghost
-     * @param new_y is the new y coordinate of the ghost
-     * @param newChar is the new character of the ghost
-     * @return the new direction of the ghost
-     */
-    int getNewDirectionPath(std::vector<std::vector<char>> &game_map, int &new_x, int &new_y, char &newChar);
-
-    /**
     * \brief This function is used to set the default move delay of the ghost
     * @param delay is the new default move delay
     */
-     void setDefaultMoveDelay(double delay) override;
+    void setDefaultMoveDelay(double delay) override;
 
 private:
     int *pacman_x; /**< This variable stores the x coordinate of the pacman */

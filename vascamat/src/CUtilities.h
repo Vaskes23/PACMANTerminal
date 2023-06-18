@@ -27,7 +27,6 @@
 
 class Ghost;
 
-using namespace std;
 
 /**
  * \@file CUtilities.h is responsible for the movement of the entities in the game and functions that enable it.
@@ -54,10 +53,11 @@ public:
      * \param pacman_chars_left[in] - The vector of chars which represent the pacman when it is moving left
      * \param pacmanChar[in] - The char which represents the pacman
     */
-    void initializePacman(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap, int &x, int &y,
-                          vector<char> *&currentDirection, int &charIndex,
-                          vector<char> &pacman_chars_right,
-                          vector<char> &pacman_chars_left, char &pacmanChar);
+    void initializePacman(std::vector<std::vector<char> > &gameMap, std::vector<std::vector<char> > &displayedMap,
+                     std::pair<int, int> &coord,
+                     std::vector<char> *&currentDirection, int &charIndex,
+                     std::vector<char> &pacman_chars_right,
+                     std::vector<char> &pacman_chars_left, char &pacmanChar);
 
 
     /**
@@ -65,7 +65,7 @@ public:
      * \param gameMap[in] - The map of the game stored in a vector of vectors of chars
      * \return The initial position of the pacman
     */
-    pair<int, int> findPacmanInitialPosition(const vector<vector<char> > &gameMap);
+    std::pair<int, int> findPacmanInitialPosition(const std::vector<std::vector<char> > &gameMap);
 
     /**
     * \brief This function handles the teleportation of the pacman.
@@ -78,11 +78,11 @@ public:
      * \param pacman_chars_right[in] - The vector of chars which represent the pacman when it is moving right
      * \param pacman_chars_left[in] - The vector of chars which represent the pacman when it is moving left
     */
-    void
-    handleTeleportation(int &new_x, int &new_y, const vector<vector<char> > &game_map, vector<char> *&current_direction,
-                        vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
-                        vector<char> &pacman_chars_right,
-                        vector<char> &pacman_chars_left);
+    void handleTeleportation(std::pair<int, int> &new_coord, const std::vector<std::vector<char> > &game_map,
+                             std::vector<char> *&current_direction,
+                             std::vector<char> &pacman_chars_up, std::vector<char> &pacman_chars_down,
+                             std::vector<char> &pacman_chars_right,
+                             std::vector<char> &pacman_chars_left);
 
 
     /**
@@ -95,7 +95,7 @@ public:
      * \param gameTag[in] - The tag of the player
      * \param score[in] - The score of the game
     */
-    void handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const string &gameTag,
+    void handleInput(int &ch, int &last_ch, bool &paused, WINDOW *pause_win, int &highlight, const std::string &gameTag,
                      int &score);
 
 
@@ -114,10 +114,11 @@ public:
      * \param pacmanChar[in] - The char which represents the pacman
      * \param gameTag[in] - The tag of the game
     */
-    void startGame(int &x, int &y, vector<vector<char> > &gameMap,
-                   vector<vector<char> > &displayedMap, vector<char> *&currentDirection, int &charIndex,
-                   vector<char> &pacman_chars_up, vector<char> &pacman_chars_down, vector<char> &pacman_chars_right,
-                   vector<char> &pacman_chars_left, char &pacmanChar, const string &gameTag);
+    void startGame(std::pair<int, int> &coord, std::vector<std::vector<char> > &gameMap,
+                   std::vector<std::vector<char> > &displayedMap, std::vector<char> *&currentDirection, int &charIndex,
+                   std::vector<char> &pacman_chars_up, std::vector<char> &pacman_chars_down,
+                   std::vector<char> &pacman_chars_right,
+                   std::vector<char> &pacman_chars_left, char &pacmanChar, const std::string &gameTag);
 
     /**
      * @brief This function handles the movement logic of the game.
@@ -131,11 +132,11 @@ public:
      * @param pacman_chars_right[in] - The vector of chars which represent the pacman when it is moving right
      * @param pacman_chars_left[in] - The vector of chars which represent the pacman when it is moving left
      */
-    void handleLogic(int &new_x, int &new_y, int &last_ch, const vector<vector<char> > &game_map,
-                     vector<char> *&current_direction,
-                     vector<char> &pacman_chars_up, vector<char> &pacman_chars_down,
-                     vector<char> &pacman_chars_right,
-                     vector<char> &pacman_chars_left);
+    void handleLogic(std::pair<int, int> &new_coord, int &last_ch, const std::vector<std::vector<char> > &game_map,
+                     std::vector<char> *&current_direction,
+                     std::vector<char> &pacman_chars_up, std::vector<char> &pacman_chars_down,
+                     std::vector<char> &pacman_chars_right,
+                     std::vector<char> &pacman_chars_left);
 
 
     /**
@@ -151,10 +152,10 @@ public:
      * @param pacman_char[in] - The char which represents the pacman
      * @param ghosts[in] - The unique vector of ghosts
      */
-    void handleScoreAndUpdateMaps(int &new_x, int &new_y, int &x, int &y, vector<vector<char> > &game_map,
-                                  vector<vector<char> > &displayed_map, int &char_index,
-                                  vector<char> *&current_direction,
-                                  char &pacman_char, vector<unique_ptr<Ghost>> &ghosts);
+    void handleScoreAndUpdateMaps(std::pair<int, int> &new_coord, std::pair<int, int> &coord, std::vector<std::vector<char> > &game_map,
+                                  std::vector<std::vector<char> > &displayed_map, int &char_index,
+                                  std::vector<char> *&current_direction,
+                                  char &pacman_char, std::vector<std::unique_ptr<Ghost>> &ghosts);
 
 
     /**
@@ -163,7 +164,7 @@ public:
      * @param gameTag[in] - The tag of the game
      * @param score[in] - The score of the game
     */
-    void displayEndGameMessage(bool isWinner, const string &gameTag, int score);
+    void displayEndGameMessage(bool isWinner, const std::string &gameTag, int score);
 
     /**
     * @brief This function resets the pacman position.
@@ -172,7 +173,7 @@ public:
      * @param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
      * @param pacmanChar[in] - The char which represents the pacman
     */
-    void resetPacmanPosition(int &x, int &y, vector<vector<char> > &displayedMap, char &pacmanChar);
+    void resetPacmanPosition(std::pair<int, int> &coord, std::vector<std::vector<char> > &displayedMap, char &pacmanChar);
 
 
     /**
@@ -189,18 +190,21 @@ public:
      * @param pacman_chars_left[in] - The vector of chars which represent the pacman when it is moving left
      * @param pacmanChar[in] - The char which represents the pacman
     */
-    void resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
-                   int &x, int &y, vector<char> *&currentDirection, int &charIndex,
-                   vector<char> &pacman_chars_right,vector<char> &pacman_chars_left, char &pacmanChar);
+    void resetGame(std::vector<std::vector<char> > &gameMap, std::vector<std::vector<char> > &displayedMap,
+                   std::pair<int, int> &coord, std::vector<char> *&currentDirection, int &charIndex,
+                   std::vector<char> &pacman_chars_right,std::vector<char> &pacman_chars_left, char &pacmanChar);
+
+protected:
+    int cherrysEaten, pacmanLives = 3;/**< The number of cherries eaten and pacman lives */
+    long cherryEatenTimestamp; /**< The timestamp of the cherry eaten */
+    bool cherryEaten = false; /**< The boolean which tells if the cherry was eaten */
 
 
 private:
     double defaultMoveDelay; /**< The default move delay */
-    int cherrysEaten, pointsEaten, pacmanLives = 3; /**< The number of cherries eaten, points eaten and pacman lives */
-    long cherryEatenTimestamp; /**< The timestamp of the cherry eaten */
-    bool cherryEaten = false; /**< The boolean which tells if the cherry was eaten */
-    pair<int, int> pacmanInitPos; /**< The initial pacman coordinates */
-    map<string, pair<int, double>> difficultySettings; /**< The map of the difficulty settings */
+    int pointsEaten; /**< The number of cherries eaten, points eaten and pacman lives */
+    std::pair<int, int> pacmanInitPos; /**< The initial pacman coordinates */
+    std::map<std::string, std::pair<int, double>> difficultySettings;  /**< The map of the difficulty settings */
     int ghostPoints = 0; /**< The number of points for eating a ghost */
     int abilityTime; /**< The time of the ability */
 };

@@ -17,7 +17,6 @@
 
 #include "ConfigurationManagement.h"
 
-using namespace std;
 
 /**
  * \@file CUIMenu.h is responsible for creating menus in the game.
@@ -76,13 +75,13 @@ public:
     * \brief This function is used to print the main menu on the screen.
      * \return The selected option
     */
-    string mainMenu();
+    std::string mainMenu();
 
     /**
      * \brief This function handles the interaction with the settings menu.
      * \return The selected option
      */
-    string settingsMenu();
+    std::string settingsMenu();
 
 };
 
