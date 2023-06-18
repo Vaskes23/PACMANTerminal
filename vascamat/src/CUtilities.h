@@ -43,8 +43,7 @@ public:
     * \brief This function initializes the pacman.
      * \param gameMap[in] - The map of the game stored in a vector of vectors of chars
      * \param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
-     * \param x[in] - The X coordinate of the pacman
-     * \param y[in] - The Y coordinate of the pacman
+     * \param coord[in] - The coordinates of the pacman
      * \param currentDirection[in] - The current direction of the pacman
      * \param charIndex[in] - The index of the current direction of the pacman
      * \param pacman_chars_up[in] - The vector of chars which represent the pacman when it is moving up
@@ -69,8 +68,7 @@ public:
 
     /**
     * \brief This function handles the teleportation of the pacman.
-     * \param new_x[in] - The new X coordinate of the pacman
-     * \param new_y[in] - The new Y coordinate of the pacman
+     * \param new_coord[in] - The new coordinates of the pacman
      * \param game_map[in] - The map of the game stored in a vector of vectors of chars
      * \param current_direction[in] - The current direction of the pacman
      * \param pacman_chars_up[in] - The vector of chars which represent the pacman when it is moving up
@@ -101,8 +99,7 @@ public:
 
     /**
     * \brief This function starts the game.
-     * \param x[in] - The X coordinate of the pacman
-     * \param y[in] - The Y coordinate of the pacman
+     * \param coord[in] - The coordinates of the pacman
      * \param gameMap[in] - The map of the game stored in a vector of vectors of chars
      * \param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
      * \param currentDirection[in] - The current direction of the pacman
@@ -122,8 +119,7 @@ public:
 
     /**
      * @brief This function handles the movement logic of the game.
-     * @param new_x[in] - The new X coordinate of the pacman
-     * @param new_y[in] - The new Y coordinate of the pacman
+     * @param new_coord[in] - The new coordinates of the pacman
      * @param last_ch[in] - The last character
      * @param game_map[in] - The map of the game stored in a vector of vectors of chars
      * @param current_direction[in] - The current direction of the pacman
@@ -141,8 +137,7 @@ public:
 
     /**
      * @brief This function handles the score and updates the maps.
-     * @param new_x[in] - The new X coordinate of the pacman
-     * @param new_y[in] - The new Y coordinate of the pacman
+     * @param new_coord[in] - The new coordinates of the pacman
      * @param x[in] - The X coordinate of the pacman
      * @param y[in] - The Y coordinate of the pacman
      * @param game_map[in] - The map of the game stored in a vector of vectors of chars
@@ -168,8 +163,7 @@ public:
 
     /**
     * @brief This function resets the pacman position.
-     * @param x[in] - The X coordinate of the pacman
-     * @param y[in] - The Y coordinate of the pacman
+     * @param coord[in] - The coordinates of the pacman
      * @param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
      * @param pacmanChar[in] - The char which represents the pacman
     */
@@ -180,8 +174,7 @@ public:
     * @brief This function resets the game.
      * @param gameMap[in] - The map of the game stored in a vector of vectors of chars
      * @param displayedMap[in] - The map of the game displayed in a vector of vectors of chars
-     * @param x[in] - The X coordinate of the pacman
-     * @param y[in] - The Y coordinate of the pacman
+     * @param coord[in] - The coordinates of the pacman
      * @param currentDirection[in] - The current direction of the pacman
      * @param charIndex[in] - The index of the current direction of the pacman
      * @param pacman_chars_up[in] - The vector of chars which represent the pacman when it is moving up
