@@ -10,8 +10,6 @@
 #define POINT '.'
 #define TELEPORT 'X'
 
-//CPrint cPrintInstance;
-//CUIMenu cUIMenuInstance;
 ConfigurationManagement configurationManagementInstance;
 
 using namespace std;
@@ -287,16 +285,17 @@ void CUtilities::startGame(int &x, int &y, vector<vector<char> > &gameMap,
     //creates ghosts
     for (int i = 0; i < gameMap.size(); ++i) {
         for (int j = 0; j < gameMap[i].size(); ++j) {
-            if (gameMap[i][j] == 'G') {
+            char current = gameMap[i][j];
+            if (current == 'A' || current == 'B' || current == 'C') {
                 //creates ghosts with different abilities
-                switch (ghostCounter % 3) {
-                    case 0:
+                switch (current) {
+                    case 'A':
                         ghosts.push_back(make_unique<GhostA>(j, i, gameMap[i][j], &x, &y));
                         break;
-                    case 1:
+                    case 'B':
                         ghosts.push_back(make_unique<GhostB>(j, i, gameMap[i][j], &x, &y));
                         break;
-                    case 2:
+                    case 'C':
                         ghosts.push_back(make_unique<GhostC>(j, i, gameMap[i][j]));
                         break;
                 }

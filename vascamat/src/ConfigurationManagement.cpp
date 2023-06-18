@@ -51,7 +51,7 @@ vector<vector<char> > ConfigurationManagement::readMapFromFile(const string &fil
             char ch = row[i];
             if (ch == '<') {
                 pacmannumber++;
-            } else if (ch == 'G') {
+            } else if ( ch == 'A' || ch == 'B' || ch == 'C') {
                 ghostnumber++;
             } else if (ch == POINT) {
                 points++;
@@ -73,7 +73,7 @@ vector<vector<char> > ConfigurationManagement::readMapFromFile(const string &fil
         throw runtime_error("The map must have exactly one Pacman ('<')");
     }
     if (ghostnumber < 1 || ghostnumber > 3) {
-        throw runtime_error("The map must have between 1 and 3 ghosts ('G')");
+        throw runtime_error("The map must have between 1 and 3 ghosts ('A', 'B', 'C')");
     }
     if (teleport_count == 2) {
         teleport_exists = true;
@@ -90,7 +90,7 @@ bool ConfigurationManagement::getTeleportExists() const {
     return teleport_exists;
 }
 
-pair<int, int>* ConfigurationManagement::getTeleport() {
+pair<int, int> *ConfigurationManagement::getTeleport() {
     return teleport;
 }
 
@@ -98,7 +98,7 @@ int ConfigurationManagement::getTotalCherries() const {
     return totalCherries;
 }
 
-int ConfigurationManagement::getTotalPoints() const{
+int ConfigurationManagement::getTotalPoints() const {
     return totalPoints;
 }
 
@@ -141,7 +141,8 @@ vector<ConfigurationManagement::ScoreEntry> ConfigurationManagement::readHighSco
     return scores;
 }
 
-void ConfigurationManagement::writeHighScores(const string &filename, const vector<ConfigurationManagement::ScoreEntry> &scores) {
+void ConfigurationManagement::writeHighScores(const string &filename,
+                                              const vector<ConfigurationManagement::ScoreEntry> &scores) {
     ofstream file(filename);
 
     // Write the scores to the file

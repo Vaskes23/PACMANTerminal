@@ -1,3 +1,5 @@
+gyyc 483
+k 385
 weg 371
 dfdf 335
 FUNGUJ! 333
@@ -6,5 +8,3 @@ krucifix 296
 sdv 260
 fe 229
 L.Valgrind 192
-jjn 190
-qf 180
