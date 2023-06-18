@@ -5,6 +5,8 @@ using namespace std;
 CUtilities cMoveInstanceMain;
 CUIMenu CUIMenuInstanceMain;
 
+
+
 int main() {
     // Initialize ncurses
     initscr();
