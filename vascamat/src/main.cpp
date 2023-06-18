@@ -5,8 +5,6 @@ using namespace std;
 CUtilities cMoveInstanceMain;
 CUIMenu CUIMenuInstanceMain;
 
-
-
 int main() {
     // Initialize ncurses
     initscr();
@@ -14,11 +12,6 @@ int main() {
     noecho();
     cbreak();   // Line buffering disabled. pass on everything
     string name = CUIMenuInstanceMain.mainMenu();
-
-    struct termios term;
-    tcgetattr(0, &term);
-    term.c_lflag &= ~ISIG;  // Disable the INTR, QUIT and SUSP characters
-    tcsetattr(0, TCSANOW, &term);
 
     int height, width, starty = 0, startx = 0;
     CUIMenuInstanceMain.initializeWindowAndCurses(height, width, starty, startx);

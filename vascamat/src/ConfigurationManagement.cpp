@@ -11,6 +11,16 @@
 #define POINT '.'
 #define TELEPORT 'X'
 
+//enum class TileType : char {
+//    WALL = '#',
+//    EMPTY_SPACE = ' ',
+//    CHERRY = '%',
+//    APPLE = '@',
+//    POINT = '.',
+//    TELEPORT = 'X',
+//};
+
+
 using namespace std;
 
 map<string, pair<int, double>> ConfigurationManagement::readConfig() {

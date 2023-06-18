@@ -67,8 +67,6 @@ CUtilities::initializePacman(vector<std::vector<char> > &gameMap, std::vector<st
     } catch (const runtime_error &e) {
         cout << "Error: " << e.what() << endl;
         exit(1);
-
-        return;
     }
     displayedMap = gameMap;
 
@@ -398,6 +396,7 @@ void CUtilities::startGame(std::pair<int, int> &coord, vector<vector<char> > &ga
 void CUtilities::resetGame(vector<vector<char> > &gameMap, vector<vector<char> > &displayedMap,
                            std::pair<int, int> &coord, vector<char> *&currentDirection, int &charIndex,
                            vector<char> &pacman_chars_right, vector<char> &pacman_chars_left, char &pacmanChar) {
+
     gameMap = configurationManagementInstance.readMapFromFile("examples/map1.txt");
     displayedMap = gameMap;
     // Reset pacman position
